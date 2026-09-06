@@ -1,76 +1,82 @@
-# Configuración de GoHighLevel para la landing de reconstrucción
+# Configuración de GoHighLevel para la landing de comunidades
 
-## Estado: FUNCIONANDO (verificado 2026-09-06)
+## Estado: PENDIENTE de workflow propio
 
-El circuito completo está cerrado y probado de punta a punta:
+El circuito técnico ya existe (heredado de la landing de reconstrucción) y está probado:
 
 ```
 Landing → /api/lead (Vercel, serverless) → Webhook GHL → Workflow → Contacto creado
                     └→ Meta Conversions API (dedup por event_id)
 ```
 
-Prueba final: un POST a `https://bakano-reconstruccion-leads.vercel.app/api/lead` devolvió
-`{"ok":true,"capi":true,...}` y el contacto **PRUEBA FINAL BORRAR** apareció en GHL con su teléfono.
+Lo que falta es un **workflow de GHL para esta campaña**. El de reconstrucción mapea campos
+(`interes`, `plan_nombre`, `valor`) que esta landing ya no manda.
 
-## Lo que está montado en GHL
+## Cómo montarlo
 
 - **Subcuenta:** bakano (`pEFChujwCCaMWBNbZYD1`)
-- **Carpeta:** `LEADS VENTA DE PAGINAS WEB Y TIENDAS ONLINE`
-- **Workflow:** `New Workflow : 1788646833939` — **publicado**
-  - Trigger: **Webhook entrante**
-  - Acción: **Crear contacto**, con estos mapeos:
+- Crear carpeta `LEADS MONETIZAR COMUNIDAD` y un workflow con:
+  - Trigger: **Webhook entrante** (GHL genera la URL; va en `GHL_WEBHOOK_URL`, nunca en código).
+  - GHL exige una **referencia de mapeo** antes de guardar: mandarle una petición de muestra con
+    el payload de abajo y elegirla en el dropdown.
+  - Acción **Crear contacto**:
 
 | Campo GHL | Variable del webhook |
 |---|---|
 | Phone | `Inbound Webhook Trigger . Telefono` |
 | First name | `Inbound Webhook Trigger . Nombre` |
 | Last name | `Inbound Webhook Trigger . Apellido` |
+| Contact source | `Inbound Webhook Trigger . Origen` |
+| Website / campo custom | `Inbound Webhook Trigger . Instagram` |
 
-Webhook del workflow (vive en `GHL_WEBHOOK_URL`, nunca en el código):
+  - Acción **Add Tag** leyendo `Inbound Webhook Trigger . Tags`.
+  - Condición por `Inbound Webhook Trigger . Etapa`: solo `comunidad_lead` crea contacto. Las
+    visitas (`comunidad_view`) llegan sin datos personales y no deben crear contactos vacíos.
+  - Si `Tags` contiene `nurture`, no meterlo en el pipeline de ventas.
 
-```
-https://services.leadconnectorhq.com/hooks/pEFChujwCCaMWBNbZYD1/webhook-trigger/7ad99221-8fcc-4c24-b27f-311df4b27290
-```
-
-> **Costo:** el trigger *Webhook entrante* es **premium en GHL y cobra por ejecución**.
-> Cada lead que entre genera un cargo adicional. Tenerlo en cuenta al escalar tráfico.
-
-> El funnel VSL viejo usa **otro** webhook (`b26ee589…`) y quedó intacto. Los dos flujos
-> están separados de raíz, sin tocar sus automatizaciones.
-
-## Pendientes
-
-1. **Etiquetas.** `api/lead.ts` ya envía el campo `tags`
-   (`landing-reconstruccion`, `interes-web-400` / `interes-tienda-500` / `solo-informacion`,
-   `lead-caliente` / `nurture`), pero **el workflow todavía no las aplica**: falta una acción
-   *Add Tag* que lea `Inbound Webhook Trigger . Tags`.
-2. **Campos extra sin mapear:** `negocio` → Business Name, `origen` → Contact source,
-   `plan_nombre`, `valor`, `event_id`, `fbclid`/`fbc`/`fbp`, `utm_*`.
-3. **Ruteo de `interes: ayudar`:** esa gente vino por la historia, no a comprar. Conviene
-   mandarla a nurture y no al pipeline de ventas.
-4. **Borrar los contactos de prueba:** `PRUEBA FINAL BORRAR`, `TEST Claude BORRAR`, `MUESTRA MAPEO`.
+> **Costo:** el trigger *Webhook entrante* es **premium en GHL y cobra por ejecución**. Cada
+> visita y cada lead generan un cargo. Si el tráfico crece, filtrar las visitas antes del webhook
+> o dejar de mandarlas.
 
 ## Payload que envía el servidor
 
 ```json
 {
-  "etapa": "reconstruccion_lead",
+  "etapa": "comunidad_lead",
   "event_id": "lead_…",
-  "nombre": "María", "apellido": "Pérez",
+  "nombre": "Scarlett", "apellido": "Pérez",
+  "full_name": "Scarlett Pérez",
   "telefono": "+593984934039",
-  "negocio": "Panadería La Espiga",
-  "interes": "tienda",
-  "plan_nombre": "Tienda Online + PayPhone",
-  "valor": "500",
-  "origen": "landing-reconstruccion",
-  "tags": "landing-reconstruccion,interes-tienda-500,lead-caliente",
-  "full_name": "María Pérez",
+  "usuario": "scarlett",
+  "instagram": "https://www.instagram.com/scarlett/",
+  "tamano": "20k-50k",
+  "tamano_nombre": "Entre 20k y 50k",
+  "oferta": "servicio",
+  "oferta_nombre": "Un servicio (asesorías, sesiones, mentorías)",
+  "origen": "landing-comunidad",
+  "tags": "landing-comunidad,comunidad-20k-50k,oferta-servicio,lead-calificado",
   "fbclid": "", "fbc": "", "fbp": "", "utm_source": "", "…": ""
 }
 ```
 
-Las visitas mandan `etapa: "reconstruccion_view"` sin datos personales. El workflow **no** las
-filtra todavía; si empiezan a crear contactos vacíos, añade una condición por `etapa`.
+### Etiquetas que calcula `api/lead.ts`
+
+| Etiqueta | Cuándo |
+|---|---|
+| `landing-comunidad` | Siempre |
+| `comunidad-menos-20k` / `comunidad-20k-50k` / `comunidad-50k-100k` / `comunidad-100k-mas` | Según el tamaño elegido |
+| `oferta-servicio` / `oferta-conocimiento` / `oferta-producto` / `oferta-no-se` | Según lo que quiere vender |
+| `lead-calificado` | Comunidad desde 20k |
+| `nurture` | Menos de 20k |
+
+`tamano` y `oferta` son los ids de `src/data/comunidad.ts`. Si se cambian ahí, cambian aquí.
+
+## Meta (CAPI)
+
+- `Lead` cuando la comunidad califica (≥ 20k); `Contact` cuando no.
+- Sin `value`: la campaña no tiene precio público.
+- `content_name`: `Comunidad <tamaño>`; `content_category`: la oferta.
+- El navegador dispara el mismo evento con el mismo `eventID`, así Meta deduplica.
 
 ## Secretos
 
@@ -80,5 +86,4 @@ filtra todavía; si empiezan a crear contactos vacíos, añade una condición po
 | `.env.example` | Plantilla vacía | Público en GitHub, sin secretos |
 | Vercel (Secret, Production) | Valores reales | Solo el servidor |
 
-El token de CAPI **no está en el bundle** — verificado: 0 apariciones en el JS público.
-El Pixel `3295262687297231` sí es público (va en `index.html`), y eso es correcto.
+El token de CAPI no va en el bundle. El Pixel `3295262687297231` sí es público (`index.html`).

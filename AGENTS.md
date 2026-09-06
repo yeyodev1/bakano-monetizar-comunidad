@@ -1,4 +1,4 @@
-# Bakano Funnel — Agent Guide
+# Bakano — Monetizar comunidad · Agent Guide
 
 ## Commands
 ```bash
@@ -9,53 +9,52 @@ pnpm format       # prettier --write src/
 pnpm preview      # vite preview
 ```
 
-No test framework, no CI, no ESLint config exist.
+No test framework, no CI, no ESLint config exist. `pnpm type-check` is the only quality gate.
 
 ## Conventions
 - **No semicolons**, single quotes, 100 print width (Prettier enforced).
 - **No emojis** — use FontAwesome 6 `<i class="fa-solid fa-...">` (loaded via CDN in `index.html`, not npm).
+- **Flex, not grid.** Mobile-first; `@media (min-width: 768px)` to scale up.
 - **SCSS color variables** (`$BAKANO-PINK`, `$BAKANO-DARK`, etc.) are auto-injected into every `<style lang="scss">` block by Vite — no explicit `@use` needed in components.
 - `@` alias works in both TS imports and SCSS paths (maps to `./src`).
 - Node `^20.19.0 || >=22.12.0` required.
 
 ## Architecture
-Single-page VSL funnel (not multi-section). Route flow in `src/router/index.ts`:
-- `/` (alias `/registro-vsl-tr`) → `/ver-video` → `/agendar` → `/cita-confirmada`
-- `/sin-espacio` = disqualification path
-- `/calificar` = standalone qualification page (2-step: contact + vertical/billing/ubicacion/objetivo/mejora). Same webhooks as the modal flow.
-- `/politicas-privacidad` and `/aviso-legal` = legal pages
+Two independent flows share the router (`src/router/index.ts`):
 
-SEO is dynamically set in the router's `afterEach` hook from each route's `meta` object (title, description, og tags, canonical). Edit route `meta` to change page SEO.
+- `/` → `ComunidadView.vue` — **the active landing**. Single page for creators with 20k+ followers
+  who want to monetize their community. Sections: hero → Scarlett case → process → cases →
+  "is this for you" → contact. Lead form lives in `DiagnosticoModal` + `DiagnosticoForm`.
+- `/registro-vsl-tr` → legacy VSL funnel (`FunnelView` → `/ver-video` → `/agendar` → `/cita-confirmada`, `/sin-espacio`, `/calificar`). Untouched.
+- `/politicas-privacidad`, `/aviso-legal` — legal pages.
 
-Obsolete file artifacts (not in router, do not use): `HomeView.vue`, `ThankYouView.vue`, `ToolsView.vue`.
+SEO is set in the router's `afterEach` hook from each route's `meta`. Edit route `meta` to change page SEO.
 
-Page transitions defined in `App.vue` (fade + slide, respects `prefers-reduced-motion`).
+**All landing copy comes from `src/data/comunidad.ts`**, which in turn comes from the reel
+transcribed in `docs/transcripciones-reels.md`. Do not invent numbers, prices, deadlines, or cases.
 
-## localStorage keys
-| Key | What | Written by |
-|---|---|---|
-| `bk_contact` | `{nombre, apellido, negocio, email, telefono, timestamp}` | RegistrationModal + VideoView guard. A Pinia store hydrates from it on init. |
-| `bk_qualification` | `{rol, facturacion, califica, timestamp}` | CalendarModal + CalificarView |
-| `bk_disq_at` | timestamp ms | CalendarModal on disqualify |
-| `bk_booked_at` | timestamp ms | BookingView on confirm |
-| `bk_fb` (sessionStorage) | `{fbclid, fbc, fbp, utm_*}` | `fbclid.ts` on FunnelView mount |
+Obsolete files (not in router, do not use): `HomeView.vue`, `ThankYouView.vue`, `ToolsView.vue`.
 
-## Guards
-- **FunnelView**: `bk_disq_at` < 24h → `/sin-espacio` (disabled on localhost).
-- **VideoView**: no `bk_contact` → blocking overlay (disabled on localhost).
-- **CalendarModal / CalificarView**: only owner/partner + monthly revenue above $20k + commercial objective qualifies. Others are tagged for nurture and routed to `/sin-espacio`; disqualification saves `bk_disq_at`.
-- **CalendarModal UX**: 6-step wizard (one question per step, radio auto-advance after ~280ms, progress bar, back button). Step 6 = mejora textarea + consent + submit.
+## Lead pipeline
+```
+Browser → POST /api/lead (Vercel serverless) ─┬→ GHL inbound webhook → workflow → contact
+                                              └→ Meta Conversions API (dedup by event_id)
+```
+- `src/utils/ghl.ts` → `trackStage(etapa, data)` posts to `/api/lead`. Stage `comunidad_lead` throws on failure (user must see it); `comunidad_view` swallows errors.
+- `api/lead.ts` holds the secrets (`GHL_WEBHOOK_URL`, `META_CAPI_TOKEN`), computes tags from `tamano` + `oferta`, and sends Meta `Lead` when the community is ≥ 20k, `Contact` otherwise. Same `califica()` rule as `src/data/comunidad.ts`.
+- Payload and tag table: `docs/configuracion-ghl.md`.
 
-## GHL integration
-- **Tracker webhook**: hardcoded URL in `src/utils/ghl.ts` — `trackStage(etapa, data)`, silent on failure.
-- Initial contact fires `CompleteRegistration`; only qualified $20k+ owner/partner submissions fire `Lead`; confirmed calendar bookings fire `Schedule`.
-- **Calendar iframe**: `https://api.leadconnectorhq.com/widget/booking/dtpY2GCQjoOkpm8JUtYz` with `?firstName=&email=&phone=` from `bk_contact`. Booking confirmed via `postMessage(['msgsndr-booking-complete', {...}])`. Height auto-resizes via `postMessage({ type: 'booking-app', height: N })`.
+## Meta attribution
+- Pixel `3295262687297231` is initialized once in `index.html`.
+- `src/utils/fbclid.ts` stores `fbclid`/`fbc`/`fbp`/UTMs in `sessionStorage` under `bk_fb`.
+- `generateEventId()` → same id goes to the webhook and to `fbq(..., { eventID })` so Meta dedups.
+
+## Pending (see `docs/CONTEXTO.md`)
+- Vercel project not created yet.
+- Domain undecided: `comunidad.bakano.ec` is a placeholder in router, `index.html`, `public/`, `api/lead.ts`.
+- GHL workflow for this campaign not built yet.
 
 ## Vite quirks
-- [`allowedHosts`](/Users/diegoreyes/projects/work/bakano/general/funnels-landings/bakano-funnel-traficker/vite.config.ts) includes an ngrok tunnel — add yours there for tunnel testing.
+- `server.allowedHosts` includes an ngrok tunnel — add yours there for tunnel testing.
 - `vite-plugin-vue-devtools` active in dev.
-- `.env` is gitignored — local config is not committed.
-- No Vitest/Cypress/Playwright configs exist.
-
-## Existing reference file
-`CLAUDE.md` has detailed funnel content, brand colors/fonts, and component listings. This file is the compact operational supplement — read both.
+- `.env` is gitignored — copy `.env.example`.

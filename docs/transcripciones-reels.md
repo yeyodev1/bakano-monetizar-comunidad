@@ -1,13 +1,41 @@
-# Transcripciones de los reels (whisper.cpp small, es)
+# Transcripción del reel que origina la campaña
 
-Fuente: @bakano.ec. Generado con whisper-cli.
+Fuente: @bakano.ec. Audio transcrito con whisper.cpp (modelo small, es) el 2026-09-06.
+Es la única fuente de datos de la landing: **no inventar cifras ni casos que no estén aquí.**
 
-## https://www.instagram.com/reel/DcwigJrTN8t/
+## https://www.instagram.com/reel/Dc6XD6TFRvV/
 
-Nos robaron. Yo llegamos a la oficina y esto fue lo que encontramos. Nos robaron todo. Computadoras, iPads, equipos, luces. Todo lo que nosotros compramos para hacer crecer este negocio, se fue. Lo que más me duele de todo esto es que no fue un robo cualquiera, sino que un miembro de nuestro equipo nos engañó para conseguir la llave en la oficina. Metieron personas que no conocíamos. Con esto quería compartirles algo que realmente pensamos que nunca nos iba a pasar, pero no nos vamos a dejar. Nos estamos reorganizando. y vamos a salir adelante.
-## https://www.instagram.com/reel/DcwjngQtS3d/
+### Audio
 
-Este es la historia de cómo Vacano casi cierra por culpa de un colaborador y tres prostitutas. Esto ocurrió en nuestra propia oficina, un lugar que nosotros creíamos que estaba seguro. Hace dos años nosotros fundamos Vacano, una agencia de marketing, de performance donde nosotros insertamos una metodología de marketing y ventas con todos nuestros clientes. Y la verdad es que todo iba muy bien. Y con todo bien me refiero a que los clientes estaban satisfechos con los procesos que iban operando con normalidad y también habíamos logrado juntar un equipo de confianza. O al menos eso creíamos. El señor 3X se había ganado toda nuestra confianza, pero una noche decidió que en vez de irse a un hotel con sus cariñosas era una buena idea traerlas a la oficina. Para rematar engañó al más pequeño de todo el grupo que no solamente es un miembro del equipo, sino que es nuestro programador estrella. Y obviamente estas invitadas no es que venían porque eran guapos, venían a trabajar y es que mientras el señor 3X y compañía creían que las estaban enamorando, en realidad ellos estaban escopulaminando. Al día siguiente llegamos y la oficina vacía, se llevaron todo y todo por una irresponsabilidad que ninguno de nosotros buscó. La vida a veces así, le das una oportunidad a la gente, confías y te golpean. Pero en Vacano no nos medimos por cómo nos caemos, sino por cómo nos levantamos. Es verdad, perdimos equipos, pero no el talento ni las ganas. Nos toca volver a levantar esta agencia. Gracias por estar aquí con nosotros.
-## https://www.instagram.com/reel/DczGaijPjfq/
+Ella es Scarlett y no sabía cómo monetizar su comunidad que es bastante grande. Y usando nuestra estrategia, pudimos empaquetar lo que ella tenía que decir y el valor que te podía entregar. El primer mes fue bastante duro. ¿Por qué? Porque hicimos implementación y estrategia. Empezamos a ejecutar, conectando su proceso de marketing y ventas, sus redes sociales con su página web, la cual nosotros levantamos. Antes tenía la idea y el conocimiento, pero me faltaba la estructura para convertir mi audiencia en clientes. Empezamos a entender cuáles eran las fortalezas que ella tenía como influencer, pero al mismo tiempo, cuáles eran las fortalezas que tenía su comunidad y así logramos conectar lo que ella quería vender con la audiencia que le quería comprar. El día de lanzamiento, el sistema funcionó desde el minuto uno y facturamos mil dólares. Y obviamente siguió facturando en sus días posteriores, pero el problema no era pautar o el algoritmo. El problema nunca fue su servicio o ella como influencer o la comunidad. Lo que le hacía falta era estructura y empaquetar bien lo que tenía que vender. Por eso, si quieres dejar de improvisar y quieres utilizar tus redes sociales para vender, te los recomiendo 100% a Bakano. Y este no es el único caso de éxito que tenemos. También tenemos influencers como Andersson Boscán, donde pudimos concretar su proceso de ventas porque él, la audiencia, ya la tenía. Entonces, si estás detenido con tu audiencia y tienes una buena comunidad y lo único que no sabes es cómo empaquetar el servicio que quieres proporcionar, dale click aquí abajo que te ayudamos.
 
-En un video anterior les comenté que nos robaron todo. Perdimos meses de trabajo, laptops, luces, micrófonos, pero no nos podemos quedar ahí. Ahora, para seguir de pie, vamos a activar lo que mejor sabemos hacer, ayudarte a ti a mejorar tu proceso de marketing y ventas. Solo por este mes estamos lanzando páginas web a 400 dólares, las mejoras que tú vas a tener, con Geo, que es el posicionamiento en los LLM, ChagPT, Gemina y toda la gía, no solamente en Google. Y si quieres vender tu tienda online con pasarela de pago de payphone integrada por 500 dólares. Así que si necesitas tu página web o tu tienda en línea, escribenos porque solo vamos a tener esta promoción por este mes y solo vamos a aceptar 30 proyectos. Y gracias por seguir aquí con nosotros.
+> Whisper transcribió "abacano" y "Antes on Buscan"; son Bakano y Andersson Boscán.
+
+### Caption del post
+
+¿Tienes una gran comunidad pero no logras monetizarla?
+
+Ese era el caso de Scarlett. Tenía la idea, el conocimiento y una audiencia fiel, pero le faltaba la estructura comercial para convertir a sus seguidores en clientes reales.
+
+Al trabajar con Bakano, dejamos de improvisar. Logramos empaquetar su mensaje, destacar sus fortalezas y conectar sus redes sociales con un proceso de ventas claro y efectivo.
+
+¿El resultado? Facturó $1,000 en su primer día de lanzamiento.
+
+El problema rara vez es el algoritmo o la falta de pauta publicitaria. El verdadero obstáculo para la mayoría de los creadores es no saber cómo estructurar y empaquetar sus servicios. Lo hemos resuelto con Scarlett, con Anderson Boscán y podemos hacerlo contigo.
+
+Si ya tienes la atención de tu audiencia pero estás estancado sin saber cómo venderles tu valor de forma profesional, contáctanos al DM.
+
+### Datos que se pueden usar en la landing
+
+| Dato | Valor |
+|---|---|
+| Caso principal | Scarlett: comunidad grande, tenía idea y conocimiento, faltaba estructura |
+| Qué se hizo | Empaquetar oferta, levantar web, conectar redes con proceso de marketing y ventas |
+| Duración visible | "El primer mes" de implementación y estrategia |
+| Resultado | $1,000 el día del lanzamiento; siguió facturando después |
+| Segundo caso | Andersson Boscán: la audiencia ya la tenía, se concretó su proceso de ventas |
+| Diagnóstico | El problema no es el algoritmo ni la pauta: es estructura y empaquetado |
+| CTA del reel | "Dale click aquí abajo que te ayudamos" |
+
+**No hay precio ni plazo en el reel.** La landing no los inventa: el CTA es un diagnóstico por WhatsApp.
+El umbral de **20k seguidores** lo definió Bakano para esta campaña, no sale del reel.

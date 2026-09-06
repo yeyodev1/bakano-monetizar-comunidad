@@ -19,6 +19,8 @@ const PIXEL_ID = process.env.META_PIXEL_ID ?? ''
 const CAPI_TOKEN = process.env.META_CAPI_TOKEN ?? ''
 const CAPI_TEST_CODE = process.env.META_CAPI_TEST_CODE ?? ''
 
+const ETAPA_LEAD = 'comunidad_lead'
+
 /** Meta exige SHA-256 en hex minúscula sobre el valor ya normalizado. */
 const hash = (v: string) => createHash('sha256').update(v.trim().toLowerCase()).digest('hex')
 
@@ -30,12 +32,16 @@ const hashPhone = (v: string) => {
 
 const str = (v: unknown) => (typeof v === 'string' ? v.trim() : '')
 
+/** Sólo comunidades desde 20k entran al pipeline. Mismo criterio que `califica` en el front. */
+const califica = (tamano: string) => tamano !== '' && tamano !== 'menos-20k'
+
 /** Etiquetas que GHL debe aplicar al contacto, decididas aquí y no en el navegador. */
-function etiquetas(interes: string): string[] {
-  const base = ['landing-reconstruccion']
-  if (interes === 'web') return [...base, 'interes-web-400', 'lead-caliente']
-  if (interes === 'tienda') return [...base, 'interes-tienda-500', 'lead-caliente']
-  return [...base, 'solo-informacion', 'nurture']
+function etiquetas(tamano: string, oferta: string): string[] {
+  const base = ['landing-comunidad']
+  if (tamano) base.push(`comunidad-${tamano}`)
+  if (oferta) base.push(`oferta-${oferta}`)
+  base.push(califica(tamano) ? 'lead-calificado' : 'nurture')
+  return base
 }
 
 async function enviarAGhl(payload: Record<string, unknown>): Promise<boolean> {
@@ -77,12 +83,12 @@ async function enviarACapi(
     event_time: Math.floor(Date.now() / 1000),
     event_id: eventId, // mismo id que dispara el pixel del navegador → Meta deduplica
     action_source: 'website',
-    event_source_url: body.origen_url || 'https://web.bakano.ec/',
+    event_source_url: body.origen_url || 'https://comunidad.bakano.ec/',
     user_data,
     custom_data: {
-      currency: 'USD',
-      value: Number(body.valor || 0),
-      content_name: body.plan_nombre || 'Solo informacion',
+      // No hay precio público en esta campaña: el valor lo pone el cierre, no el formulario.
+      content_name: body.tamano_nombre ? `Comunidad ${body.tamano_nombre}` : 'Comunidad',
+      content_category: body.oferta || 'sin-definir',
     },
   }
 
@@ -110,20 +116,36 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const b = (req.body ?? {}) as Record<string, unknown>
-  const etapa = str(b.etapa) || 'reconstruccion_lead'
+  const etapa = str(b.etapa) || ETAPA_LEAD
   const event_id = str(b.event_id) || `evt_${Date.now()}`
 
   const datos: Record<string, string> = {}
   for (const k of [
-    'nombre', 'apellido', 'telefono', 'negocio', 'interes', 'plan_nombre',
-    'valor', 'origen', 'origen_url', 'fbclid', 'fbc', 'fbp',
-    'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id',
+    'nombre',
+    'apellido',
+    'telefono',
+    'usuario',
+    'tamano',
+    'tamano_nombre',
+    'oferta',
+    'oferta_nombre',
+    'origen',
+    'origen_url',
+    'fbclid',
+    'fbc',
+    'fbp',
+    'utm_source',
+    'utm_medium',
+    'utm_campaign',
+    'utm_content',
+    'utm_term',
+    'utm_id',
   ]) {
     datos[k] = str(b[k])
   }
 
   // Las visitas sólo se registran: no son contactos ni eventos de conversión.
-  if (etapa !== 'reconstruccion_lead') {
+  if (etapa !== ETAPA_LEAD) {
     await enviarAGhl({ etapa, event_id, ...datos })
     return res.status(200).json({ ok: true, etapa })
   }
@@ -132,8 +154,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ ok: false, error: 'Faltan nombre o telefono' })
   }
 
-  const tags = etiquetas(datos.interes)
-  const ip = String(req.headers['x-forwarded-for'] ?? '').split(',')[0].trim()
+  const tags = etiquetas(datos.tamano, datos.oferta)
+  const ip = String(req.headers['x-forwarded-for'] ?? '')
+    .split(',')[0]
+    .trim()
   const ua = String(req.headers['user-agent'] ?? '')
 
   const [ghlOk, capiOk] = await Promise.all([
@@ -143,8 +167,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ...datos,
       tags: tags.join(','), // GHL mapea mejor una cadena separada por comas
       full_name: `${datos.nombre} ${datos.apellido}`.trim(),
+      instagram: datos.usuario ? `https://www.instagram.com/${datos.usuario}/` : '',
     }),
-    enviarACapi(datos, datos.interes === 'ayudar' ? 'Contact' : 'Lead', event_id, ip, ua),
+    // Sólo una comunidad que califica es un Lead para Meta; el resto es un contacto.
+    enviarACapi(datos, califica(datos.tamano) ? 'Lead' : 'Contact', event_id, ip, ua),
   ])
 
   // El lead sólo se da por bueno si GHL lo recibió; CAPI es atribución, no captura.

@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory, type RouteMeta } from 'vue-router'
 import CalificarView from '../views/CalificarView.vue'
 import FunnelView from '../views/FunnelView.vue'
-import ReconstruccionView from '../views/ReconstruccionView.vue'
+import ComunidadView from '../views/ComunidadView.vue'
 import VideoView from '../views/VideoView.vue'
 import PrivacyPolicyView from '../views/PrivacyPolicyView.vue'
 import LegalNoticeView from '../views/LegalNoticeView.vue'
@@ -30,17 +30,18 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'reconstruccion',
-      component: ReconstruccionView,
+      name: 'comunidad',
+      component: ComunidadView,
       meta: {
-        title: 'Nos robaron | Bakano \u2014 Web $400 \u00b7 Tienda con PayPhone $500',
+        title:
+          'Monetiza tu comunidad | Bakano \u2014 Para creadores con m\u00e1s de 20k seguidores',
         description:
-          'Entraron a nuestra oficina y se llevaron los equipos. Para reconstruir abrimos 30 cupos: trabajos que valen de $2,000 a $4,000 a $400 la web y $500 la tienda con pasarela PayPhone.',
-        canonical: 'https://web.bakano.ec/',
-        ogTitle: 'Nos robaron. Y en vez de cerrar, te hacemos tu p\u00e1gina web.',
+          'Tienes una comunidad grande pero no factura. Empaquetamos tu oferta, levantamos tu web y conectamos tus redes con un proceso de ventas. Con Scarlett: $1,000 el d\u00eda del lanzamiento.',
+        canonical: 'https://comunidad.bakano.ec/',
+        ogTitle: 'Tienes una comunidad grande. Pero no factura.',
         ogDescription:
-          '30 cupos: web $400 y tienda con PayPhone $500. Trabajos que normalmente valen entre $2,000 y $4,000.',
-        ogUrl: 'https://web.bakano.ec/',
+          'Para creadores con m\u00e1s de 20k seguidores. El problema no es el algoritmo ni la pauta: es estructura. Te ayudamos a empaquetar y vender.',
+        ogUrl: 'https://comunidad.bakano.ec/',
       } satisfies RouteMeta,
     },
     {
@@ -123,10 +124,10 @@ const router = createRouter({
         title: 'Política de Privacidad | Bakano Ecuador',
         description:
           'Política de privacidad de Bakano. Información sobre el tratamiento de datos personales conforme a la Ley Orgánica de Protección de Datos Personales del Ecuador.',
-        canonical: 'https://web.bakano.ec/politicas-privacidad',
+        canonical: 'https://comunidad.bakano.ec/politicas-privacidad',
         ogTitle: 'Política de Privacidad | Bakano Ecuador',
         ogDescription: 'Política de privacidad de Bakano Ecuador.',
-        ogUrl: 'https://web.bakano.ec/politicas-privacidad',
+        ogUrl: 'https://comunidad.bakano.ec/politicas-privacidad',
       } satisfies RouteMeta,
     },
     {
@@ -137,10 +138,10 @@ const router = createRouter({
         title: 'Aviso Legal | Bakano Ecuador',
         description:
           'Aviso legal de Bakano Ecuador. Términos y condiciones de uso del sitio web bakano.ec.',
-        canonical: 'https://web.bakano.ec/aviso-legal',
+        canonical: 'https://comunidad.bakano.ec/aviso-legal',
         ogTitle: 'Aviso Legal | Bakano Ecuador',
         ogDescription: 'Aviso legal de Bakano Ecuador.',
-        ogUrl: 'https://web.bakano.ec/aviso-legal',
+        ogUrl: 'https://comunidad.bakano.ec/aviso-legal',
       } satisfies RouteMeta,
     },
     {

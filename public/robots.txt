@@ -6,7 +6,7 @@ Disallow: /src/
 Disallow: /.vite/
 
 # Sitemaps
-Sitemap: https://bakano.ec/sitemap.xml
+Sitemap: https://comunidad.bakano.ec/sitemap.xml
 
 # LLM crawlers — permitidos para indexación en AI
 User-agent: GPTBot

@@ -1,51 +1,54 @@
 <script setup lang="ts">
-import { historia, reels } from '@/data/reconstruccion'
+import { historia, REEL_CODE } from '@/data/comunidad'
 import ScrollCue from './ScrollCue.vue'
 </script>
 
 <template>
-  <section id="historia" class="hist">
-    <h2 class="hist__h2">Lo que nos pasó</h2>
-    <p class="hist__sub">Lo contamos completo en video. Esta es la versión corta.</p>
+  <section id="caso" class="caso">
+    <h2 class="caso__h2">Lo que hicimos con Scarlett</h2>
+    <p class="caso__sub">
+      Tenía una comunidad grande y no la monetizaba. Así fue el proceso, en el orden en que pasó.
+    </p>
 
-    <div class="hist__timeline">
-      <article v-for="h in historia" :key="h.titulo" class="hist__hito">
-        <i class="fa-solid" :class="h.icono"></i>
-        <div>
-          <span class="hist__fecha">{{ h.fecha }}</span>
-          <h3>{{ h.titulo }}</h3>
-          <p>{{ h.texto }}</p>
-        </div>
-      </article>
-    </div>
+    <div class="caso__cuerpo">
+      <div class="caso__timeline">
+        <article v-for="h in historia" :key="h.titulo" class="caso__hito">
+          <i class="fa-solid" :class="h.icono"></i>
+          <div>
+            <span class="caso__fecha">{{ h.fecha }}</span>
+            <h3>{{ h.titulo }}</h3>
+            <p>{{ h.texto }}</p>
+          </div>
+        </article>
+      </div>
 
-    <div class="hist__reels">
-      <figure v-for="r in reels" :key="r.code">
+      <figure class="caso__reel">
         <iframe
-          :src="`https://www.instagram.com/reel/${r.code}/embed/`"
-          :title="r.pie"
+          :src="`https://www.instagram.com/reel/${REEL_CODE}/embed/`"
+          title="Scarlett cuenta cómo monetizó su comunidad con Bakano"
           loading="lazy"
           allowtransparency="true"
           allowfullscreen
           scrolling="no"
         ></iframe>
-        <figcaption>{{ r.pie }}</figcaption>
+        <figcaption>Scarlett lo cuenta en el reel</figcaption>
       </figure>
     </div>
 
-    <p class="hist__cierre">
-      <strong>No pedimos donaciones. Pedimos trabajo.</strong> Si necesitabas una página web, este
-      es el mejor momento para tenerla — y de paso nos ayudas a reponer lo que perdimos.
+    <p class="caso__cierre">
+      <strong>El problema nunca fue el algoritmo ni la pauta.</strong> Tampoco su servicio, ni ella
+      como creadora, ni su comunidad. Lo que faltaba era estructura y empaquetar bien lo que tenía
+      que vender.
     </p>
 
-    <ScrollCue destino="planes" etiqueta="Los cupos" />
+    <ScrollCue destino="proceso" etiqueta="Cómo lo hacemos" />
   </section>
 </template>
 
 <style scoped lang="scss">
-@use '@/styles/reconstruccion.scss' as r;
+@use '@/styles/comunidad.scss' as r;
 
-.hist {
+.caso {
   background: rgba(#fff, 0.025);
   @include r.seccion;
 
@@ -56,13 +59,29 @@ import ScrollCue from './ScrollCue.vue'
     @include r.subtitulo;
   }
 
+  &__cuerpo {
+    display: flex;
+    width: 100%;
+    max-width: 1040px;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 2rem;
+
+    @media (min-width: 900px) {
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 3rem;
+    }
+  }
+
   &__timeline {
     display: flex;
     width: 100%;
     max-width: 560px;
     flex-direction: column;
     gap: 1rem;
-    margin-top: 2rem;
   }
 
   &__hito {
@@ -103,23 +122,14 @@ import ScrollCue from './ScrollCue.vue'
     text-transform: uppercase;
   }
 
-  &__reels {
+  &__reel {
     display: flex;
     width: 100%;
-    max-width: 1040px;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 2rem;
-
-    figure {
-      display: flex;
-      flex: 1 1 300px;
-      max-width: 330px;
-      flex-direction: column;
-      gap: 0.6rem;
-      margin: 0;
-    }
+    max-width: 330px;
+    flex-shrink: 0;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin: 0;
 
     iframe {
       width: 100%;
@@ -137,7 +147,7 @@ import ScrollCue from './ScrollCue.vue'
   }
 
   &__cierre {
-    max-width: 46ch;
+    max-width: 48ch;
     margin: 2rem 0 0;
     color: rgba($BAKANO-LIGHT, 0.78);
     font-size: 1rem;

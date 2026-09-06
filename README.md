@@ -1,33 +1,25 @@
-# bakano-webpage
+# bakano-monetizar-comunidad
 
-This template should help get you started developing with Vue 3 in Vite.
+Landing de captación de leads de [Bakano](https://bakano.ec) para **creadores con comunidades
+desde 20k seguidores** que quieren monetizarlas. Nace del reel del caso de Scarlett:
+https://www.instagram.com/reel/Dc6XD6TFRvV/
 
-## Recommended IDE Setup
+Vue 3 + Vite + TypeScript, con una función serverless en `api/lead.ts` que reenvía los leads a
+GoHighLevel y a la Conversions API de Meta sin exponer secretos en el navegador.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
+## Desarrollo
 
 ```sh
 pnpm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
+cp .env.example .env   # rellenar con los valores reales
 pnpm dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
+pnpm type-check        # única compuerta de calidad
 pnpm build
 ```
+
+## Documentación
+
+- `CLAUDE.md` — arquitectura, convenciones y reglas de contenido.
+- `docs/CONTEXTO.md` — por qué existe, decisiones editoriales, pendientes.
+- `docs/transcripciones-reels.md` — el reel transcrito: la única fuente de datos de la landing.
+- `docs/configuracion-ghl.md` — el CRM: payload, etiquetas, workflow.

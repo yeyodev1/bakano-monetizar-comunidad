@@ -22,7 +22,7 @@ export interface RespuestaLead {
 }
 
 /**
- * Devuelve si el lead quedó registrado. Las etapas que no son `reconstruccion_lead`
+ * Devuelve si el lead quedó registrado. Las etapas que no son `comunidad_lead`
  * son sólo telemetría y nunca deben interrumpir la UX, así que sus fallos se tragan.
  */
 export async function trackStage(
@@ -30,7 +30,7 @@ export async function trackStage(
   data: Record<string, string> & { event_id?: string },
 ): Promise<RespuestaLead> {
   const event_id = data.event_id ?? generateEventId('view')
-  const esLead = etapa === 'reconstruccion_lead'
+  const esLead = etapa === 'comunidad_lead'
 
   try {
     const r = await fetch(ENDPOINT, {

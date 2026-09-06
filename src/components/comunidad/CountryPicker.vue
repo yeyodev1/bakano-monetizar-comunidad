@@ -65,7 +65,7 @@ onUnmounted(() => document.removeEventListener('click', fueraClick))
 </template>
 
 <style scoped lang="scss">
-@use '@/styles/reconstruccion.scss' as r;
+@use '@/styles/comunidad.scss' as r;
 
 .cp {
   position: relative;

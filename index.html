@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- ═══════════════════════════════════════════════
-         SEO PRIMARIO
+         SEO PRIMARIO (el router sobreescribe title/description/og por ruta)
          ═══════════════════════════════════════════════ -->
-    <title>Bakano | Agencia de Marketing Digital #1 en Ecuador</title>
-    <meta name="description" content="Bakano es la agencia de marketing digital líder en Ecuador. Ayudamos a negocios en Guayaquil y todo Ecuador a aumentar hasta un 20% su facturación con estrategias data-driven, growth marketing y tecnología avanzada. Más de 150 negocios transformados.">
-    <meta name="keywords" content="agencia marketing digital Ecuador, agencia marketing Guayaquil, marketing digital Ecuador, consultora growth marketing Ecuador, agencia publicidad digital Ecuador, estrategia digital Ecuador, growth hacking Ecuador, crecimiento empresarial Ecuador, Meta Ads Ecuador, performance marketing Ecuador, Bakano, herramientas marketing digital Ecuador, analytics negocio Ecuador, dashboard marketing Ecuador, Bakano Metrics, software analytics Ecuador">
+    <title>Monetiza tu comunidad | Bakano — Para creadores con más de 20k seguidores</title>
+    <meta name="description" content="Tienes una comunidad grande pero no factura. Bakano empaqueta tu oferta, levanta tu web y conecta tus redes con un proceso de ventas. Con Scarlett: $1,000 el día del lanzamiento.">
+    <meta name="keywords" content="monetizar comunidad, monetizar seguidores, vender a mi audiencia, creadores de contenido Ecuador, influencers Ecuador, empaquetar servicio, estructura comercial, Bakano">
     <meta name="author" content="Bakano">
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <meta name="theme-color" content="#0b0815">
@@ -32,91 +32,56 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     <!-- Canonical -->
-    <link rel="canonical" href="https://web.bakano.ec/">
+    <link rel="canonical" href="https://comunidad.bakano.ec/">
 
     <!-- ═══════════════════════════════════════════════
          OPEN GRAPH (Facebook, LinkedIn, WhatsApp)
          ═══════════════════════════════════════════════ -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://web.bakano.ec/">
+    <meta property="og:url" content="https://comunidad.bakano.ec/">
     <meta property="og:site_name" content="Bakano">
     <meta property="og:locale" content="es_EC">
-    <meta property="og:title" content="Bakano | Agencia de Marketing Digital #1 en Ecuador">
-    <meta property="og:description" content="Aumenta hasta un 20% tu facturación mensual. Más de 150 negocios transformados en Ecuador con estrategias data-driven y growth marketing sin depender de la suerte.">
+    <meta property="og:title" content="Tienes una comunidad grande. Pero no factura.">
+    <meta property="og:description" content="Para creadores con más de 20k seguidores. El problema no es el algoritmo ni la pauta: es estructura. Te ayudamos a empaquetar y vender.">
     <meta property="og:image" content="https://bakano.ec/image.png">
-    <meta property="og:image:alt" content="Bakano - Agencia de Marketing Digital en Ecuador">
+    <meta property="og:image:alt" content="Bakano - Agencia de Performance Marketing">
 
     <!-- ═══════════════════════════════════════════════
          TWITTER / X CARD
          ═══════════════════════════════════════════════ -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@bakanoec">
-    <meta name="twitter:title" content="Bakano | Agencia de Marketing Digital #1 en Ecuador">
-    <meta name="twitter:description" content="Aumenta hasta un 20% tu facturación mensual con estrategias data-driven. Más de 150 negocios transformados en Ecuador.">
+    <meta name="twitter:title" content="Tienes una comunidad grande. Pero no factura.">
+    <meta name="twitter:description" content="Para creadores con más de 20k seguidores. Empaquetamos tu oferta y conectamos tus redes con un proceso de ventas.">
     <meta name="twitter:image" content="https://bakano.ec/image.png">
 
     <!-- ═══════════════════════════════════════════════
          STRUCTURED DATA — JSON-LD
+         Sólo datos verificables. Nada de ratings ni conteos de clientes.
          ═══════════════════════════════════════════════ -->
-
-    <!-- Schema: Organization + LocalBusiness -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": ["Organization", "LocalBusiness", "ProfessionalService"],
+      "@type": ["Organization", "ProfessionalService"],
       "@id": "https://bakano.ec/#organization",
       "name": "Bakano",
-      "legalName": "Bakano Consultancy",
       "alternateName": ["Bakano EC", "Bakano Ecuador"],
-      "description": "Bakano es la agencia de marketing digital líder en Ecuador. Especializados en growth marketing, estrategia de datos, Meta Ads, desarrollo web y consultoría tecnológica para empresas que quieren escalar su facturación de forma predecible y sostenible.",
+      "description": "Agencia de performance marketing en Guayaquil, Ecuador. Ayuda a creadores con comunidades grandes a empaquetar su oferta y conectar sus redes con un proceso de ventas.",
       "url": "https://bakano.ec",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://bakano.ec/image.png",
-        "width": 512,
-        "height": 512
-      },
+      "logo": "https://bakano.ec/image.png",
       "image": "https://bakano.ec/image.png",
       "telephone": "+593984934039",
-      "email": "dquimi@bakano.ec",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Guayaquil",
         "addressRegion": "Guayas",
-        "addressCountry": "EC",
-        "addressCountryName": "Ecuador"
+        "addressCountry": "EC"
       },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": "-2.1894",
-        "longitude": "-79.8890"
-      },
-      "areaServed": [
-        {
-          "@type": "Country",
-          "name": "Ecuador"
-        },
-        {
-          "@type": "City",
-          "name": "Guayaquil"
-        },
-        {
-          "@type": "City",
-          "name": "Quito"
-        },
-        {
-          "@type": "City",
-          "name": "Cuenca"
-        }
-      ],
+      "areaServed": { "@type": "Country", "name": "Ecuador" },
       "serviceType": [
-        "Marketing Digital",
-        "Growth Marketing",
-        "Meta Ads",
-        "Estrategia de Datos",
-        "Desarrollo Web",
-        "Consultoría Tecnológica",
-        "UI/UX Design",
+        "Monetización de comunidades",
+        "Estructura comercial para creadores",
+        "Desarrollo web",
         "Performance Marketing"
       ],
       "sameAs": [
@@ -124,194 +89,19 @@
         "https://www.instagram.com/bakano.ec/",
         "https://www.facebook.com/bakano.ec",
         "https://www.tiktok.com/@bakano.ec"
-      ],
-      "contactPoint": [
-        {
-          "@type": "ContactPoint",
-          "telephone": "+593984934039",
-          "contactType": "customer service",
-          "availableLanguage": ["Spanish"],
-          "contactOption": "TollFree",
-          "areaServed": "EC"
-        },
-        {
-          "@type": "ContactPoint",
-          "email": "dquimi@bakano.ec",
-          "contactType": "sales",
-          "availableLanguage": ["Spanish"]
-        }
-      ],
-      "numberOfEmployees": {
-        "@type": "QuantitativeValue",
-        "value": 3
-      },
-      "foundingLocation": {
-        "@type": "Place",
-        "name": "Guayaquil, Ecuador"
-      },
-      "knowsAbout": [
-        "Marketing Digital",
-        "Growth Hacking",
-        "Meta Ads",
-        "Google Ads",
-        "Lean Startup",
-        "Data Analytics",
-        "CRO",
-        "Performance Marketing",
-        "Desarrollo Web",
-        "Estrategia de Negocios"
-      ],
-      "slogan": "Transformamos datos, marketing y tecnología en resultados reales para tu negocio",
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "Servicios de Marketing Digital",
-        "itemListElement": [
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Growth Marketing",
-              "description": "Estrategias de crecimiento basadas en datos para aumentar la facturación de tu negocio hasta un 20% mensual."
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Meta Ads & Performance",
-              "description": "Campañas de publicidad en Meta (Facebook e Instagram) optimizadas para maximizar el ROAS y minimizar el CPA."
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Estrategia de Datos",
-              "description": "Auditoría financiera, mapeo de fugas de capital y proyecciones de rentabilidad basadas en tus datos reales."
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Desarrollo Web",
-              "description": "Desarrollo de sitios web y aplicaciones de alto rendimiento optimizadas para conversión."
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Consultoría Tech",
-              "description": "Asesoría tecnológica para empresas que quieren escalar con sistemas automatizados y predecibles."
-            }
-          }
-        ]
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.9",
-        "reviewCount": "150",
-        "bestRating": "5"
-      }
+      ]
     }
     </script>
 
-    <!-- Schema: WebSite con SearchAction -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "@id": "https://bakano.ec/#website",
-      "url": "https://bakano.ec",
-      "name": "Bakano - Agencia de Marketing Digital Ecuador",
-      "description": "Agencia de marketing digital líder en Ecuador especializada en growth marketing, Meta Ads, estrategia de datos y desarrollo web.",
+      "@id": "https://comunidad.bakano.ec/#website",
+      "url": "https://comunidad.bakano.ec",
+      "name": "Monetiza tu comunidad - Bakano",
       "inLanguage": "es-EC",
-      "publisher": {
-        "@id": "https://bakano.ec/#organization"
-      }
-    }
-    </script>
-
-    <!-- Schema: FAQPage — optimizado para featured snippets y respuestas de LLMs -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "¿Qué es Bakano y qué hace?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Bakano es una agencia de marketing digital y consultoría de growth con sede en Guayaquil, Ecuador. Ayudamos a dueños de negocios a aumentar hasta un 20% su facturación mensual aplicando el marco Lean Startup, estrategias data-driven y campañas de Meta Ads de alto rendimiento. Hemos transformado más de 150 negocios en Ecuador."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "¿Cuál es la mejor agencia de marketing digital en Ecuador?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Bakano es reconocida como una de las principales agencias de marketing digital en Ecuador, especialmente en Guayaquil. Se distinguen por su metodología basada en datos (data-driven), el uso del framework Lean Startup para validar estrategias antes de escalar, y resultados medibles: más de 150 negocios transformados con un promedio de 20% de aumento en facturación."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "¿En qué ciudades de Ecuador opera Bakano?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Bakano tiene su sede en Guayaquil, Ecuador, pero atiende clientes en todo el país incluyendo Quito, Cuenca, Manta, Ambato y otras ciudades. También trabajan con negocios ecuatorianos que operan a nivel regional en Latinoamérica."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "¿Qué servicios de marketing digital ofrece Bakano en Ecuador?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Bakano ofrece: Growth Marketing y estrategia de crecimiento, Meta Ads (Facebook e Instagram Ads), Estrategia de Datos y análisis de rentabilidad, Desarrollo Web de alto rendimiento, Consultoría Tecnológica y automatización, y UI/UX Design. Todos los servicios se implementan bajo la Metodología 1M orientada a escalar negocios hacia el millón de dólares anuales."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "¿Cuánto cobra Bakano por sus servicios de marketing?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Los precios de Bakano se personalizan según el tamaño del negocio, los objetivos y el alcance del proyecto. Para obtener una cotización, puedes contactarlos por WhatsApp al +593 98 493 4039 o por email a dquimi@bakano.ec. Ofrecen una consulta inicial sin compromisos."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "¿Cuál es la metodología de Bakano para hacer crecer un negocio?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Bakano aplica la Metodología 1M en 3 fases: 1) Diagnóstico Data-Driven: auditoría de finanzas, ventas y fugas de capital para identificar oportunidades reales. 2) Lean Startup Framework: lanzamiento de experimentos ágiles en Meta Ads para validar ofertas con datos reales sin quemar presupuesto. 3) Escalamiento Agresivo: una vez validado el funnel, inyección de capital para construir sistemas de adquisición predecibles hacia el millón de dólares anuales."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "¿Quiénes son los fundadores de Bakano?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Bakano fue fundada por tres profesionales ecuatorianos: Luis Reyes (Founder y Estratega de Datos), Denisse Quimi (CMO y Estratega de Marketing Digital) y Diego Reyes (CTO y Director de Desarrollo Tecnológico). El equipo combina expertise en datos, marketing y tecnología para ofrecer soluciones integrales de growth."
-          }
-        }
-      ]
-    }
-    </script>
-
-    <!-- Schema: BreadcrumbList -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Inicio",
-          "item": "https://bakano.ec/"
-        }
-      ]
+      "publisher": { "@id": "https://bakano.ec/#organization" }
     }
     </script>
 
@@ -322,15 +112,9 @@
     <link rel="apple-touch-icon" href="/image.png">
 
     <!-- Preconnect para recursos externos críticos -->
-    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
-    <link rel="preconnect" href="https://fast.wistia.net" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="preconnect" href="https://metrics.bakano.ec" crossorigin>
-    <link rel="dns-prefetch" href="https://res.cloudinary.com">
-    <link rel="dns-prefetch" href="https://metrics.bakano.ec">
-
-    <!-- Font Awesome (una sola vez) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://www.instagram.com" crossorigin>
+    <link rel="dns-prefetch" href="https://www.instagram.com">
   </head>
   <body>
     <noscript><img height="1" width="1" style="display:none"

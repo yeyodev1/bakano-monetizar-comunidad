@@ -18,23 +18,27 @@ No hay test runner, ESLint ni CI en este repo. `pnpm type-check` es la única co
 
 Landing de captación de leads de **Bakano** (agencia de performance marketing, Guayaquil).
 
-**Contexto vigente:** a Bakano le robaron los equipos de la oficina (sep 2026). La landing raíz (`/`) es la campaña de reconstrucción: vende páginas web a precio rebajado y capta leads. **No hay VSL en el flujo principal** — el funnel VSL viejo sigue en el repo pero movido a `/registro-vsl-tr`.
+**Campaña vigente:** monetización de comunidades. La landing raíz (`/`) se dirige a **creadores
+con comunidades desde 20k seguidores** que no facturan con ellas, y capta leads para un
+diagnóstico por WhatsApp. **No hay VSL en el flujo principal** — el funnel VSL viejo sigue en el
+repo pero movido a `/registro-vsl-tr`.
 
-Los datos de la campaña vienen de los reels de @bakano.ec y no deben inventarse ni inflarse:
+Todo el contenido sale de un reel de @bakano.ec (el caso de Scarlett) y no debe inventarse ni inflarse:
 
 | Dato | Valor |
 |---|---|
-| Cupos | 30, solo este mes |
-| Página Web Pro | $400 — SEO para Google + **GEO** (ChatGPT, Gemini y otros LLM) |
-| Tienda Online Completa | $500 — pasarela **PayPhone** integrada |
-| Precio normal | "$2,000 a $4,000" |
+| Caso principal | Scarlett: tenía idea y conocimiento, le faltaba estructura |
+| Resultado | $1,000 el día del lanzamiento; siguió facturando después |
+| Segundo caso | Andersson Boscán: la audiencia ya la tenía, se concretó su proceso de ventas |
+| Qué hace Bakano | Diagnóstico de fortalezas → empaquetar oferta → web + conexión con redes → lanzamiento |
+| Precio / plazo | **No hay.** El reel no los da; la landing no los inventa |
+| Umbral 20k | Lo fijó Bakano para la campaña; no sale del reel |
 
-La transcripción real de los tres reels está en `docs/transcripciones-reels.md`; el porqué de cada
-decisión de copy, en `docs/CONTEXTO.md`. **Léelos antes de tocar el mensaje.**
+La transcripción y el caption del reel están en `docs/transcripciones-reels.md`; el porqué de
+cada decisión de copy, en `docs/CONTEXTO.md`. **Léelos antes de tocar el mensaje.**
 
-No nombres ni insinúes quién cometió el robo, y no traslades a la landing el detalle morboso del
-reel 2 (trabajadoras sexuales, escopolamina): identifica a un excolaborador real y es exposición
-legal. La copy se queda en la traición, no en el shock.
+Scarlett se nombra solo por su nombre, como en el reel. No agregues apellido, handle ni datos
+que no estén en la transcripción.
 
 ## Arquitectura
 
@@ -42,13 +46,27 @@ Vue 3 + Vite 7 + TS, SCSS, `vue-router`. Sin Pinia en la landing nueva (el funne
 
 **Rutas** (`src/router/index.ts`) — dos flujos independientes conviviendo:
 
-- `/` → `ReconstruccionView.vue` — **la landing activa**. Página única: hero → historia → planes → portafolio → formulario. Sin guards, sin pasos.
+- `/` → `ComunidadView.vue` — **la landing activa**. Página única: hero → caso Scarlett →
+  proceso → casos → ¿es para ti? → contacto. Sin guards, sin pasos.
 - `/registro-vsl-tr` → funnel VSL legado: `FunnelView` → `/ver-video` → `/agendar` → `/cita-confirmada`, con `/sin-espacio` como rama de descalificación y `/calificar` como página suelta.
 - `/politicas-privacidad`, `/aviso-legal` — legales.
 
 El SEO **no** se define en los componentes: vive en el `meta` de cada ruta y el hook `afterEach` del router lo escribe en el `<head>` (title, description, og:*, canonical). Para cambiar el SEO de una página, edita su `meta` en el router.
 
+El dominio de los canonicals (`comunidad.bakano.ec`) es un **supuesto** pendiente de confirmar.
+Está en `src/router/index.ts`, `index.html`, `public/sitemap.xml`, `public/robots.txt` y `api/lead.ts`.
+
 Archivos obsoletos, no usar: `HomeView.vue`, `ThankYouView.vue`, `ToolsView.vue`.
+
+### Contenido y componentes de la landing
+
+- `src/data/comunidad.ts` — **única fuente del contenido**: reel, historia de Scarlett, pasos del
+  proceso, casos, requisitos, y las opciones del formulario (`tamanos`, `ofertas`). La función
+  `califica(tamano)` decide quién entra al pipeline; el servidor replica el mismo criterio.
+- `src/components/comunidad/` — `CasoSection`, `ProcesoSection`, `CasosSection`,
+  `ParaQuienSection`, `DiagnosticoModal` + `DiagnosticoForm`, más `PhoneField`, `CountryPicker`,
+  `ScrollCue`, `ScrollProgress` reutilizables.
+- `src/styles/comunidad.scss` — mixins compartidos (`seccion`, `titulo`, `subtitulo`, `cta`, `campo`).
 
 ### El backend (`api/lead.ts`)
 
@@ -63,10 +81,11 @@ Navegador → POST /api/lead ─┬→ Webhook GHL → workflow → contacto
 Existe por una razón concreta: **el bundle de Vite es público y el repo también**. Cualquier
 secreto importado desde `src/` queda a la vista. El token de CAPI y la URL del webhook viven en
 variables de entorno del servidor (`.env` local, Secrets en Vercel) y **nunca** llegan al
-navegador — verificado: 0 apariciones en el JS de producción.
+navegador.
 
-`api/lead.ts` también decide las **etiquetas** del contacto según `interes`. Ojo: hoy las envía
-pero el workflow de GHL todavía no las aplica (ver `docs/configuracion-ghl.md`).
+`api/lead.ts` también decide las **etiquetas** del contacto según `tamano` y `oferta`, y manda a
+Meta `Lead` si la comunidad califica (≥ 20k) o `Contact` si no. El payload completo y las
+etiquetas están en `docs/configuracion-ghl.md`.
 
 Variables requeridas — plantilla en `.env.example`:
 `GHL_WEBHOOK_URL`, `META_PIXEL_ID`, `META_CAPI_TOKEN`, `META_CAPI_TEST_CODE` (opcional).
@@ -75,9 +94,9 @@ Variables requeridas — plantilla en `.env.example`:
 
 ### Despliegue
 
-Vercel, proyecto `bakano-reconstruccion-leads`, conectado a GitHub: **cada push a `main`
-redespliega**. `vercel.json` tiene el rewrite de SPA — sin él, entrar directo a una ruta interna
-da 404.
+Vercel, conectado a GitHub (`yeyodev1/bakano-monetizar-comunidad`): cada push a `main`
+redespliega. **El proyecto de Vercel todavía no está creado** (ver `docs/CONTEXTO.md`).
+`vercel.json` tiene el rewrite de SPA — sin él, entrar directo a una ruta interna da 404.
 
 ### Cómo salen los leads
 
@@ -85,7 +104,7 @@ da 404.
 **sí lanza** para que el usuario vea el error; las etapas de simple visita se tragan los fallos,
 porque el tracking nunca debe romper la UX.
 
-`ReconstruccionView` emite dos etapas: `reconstruccion_view` al montar y `reconstruccion_lead` al enviar el formulario.
+`ComunidadView` emite dos etapas: `comunidad_view` al montar y `comunidad_lead` al enviar el formulario.
 
 ### Atribución de Meta
 
@@ -106,14 +125,15 @@ El **access token de CAPI es secreto de servidor**: nunca en el bundle de Vite n
 - **Sin punto y coma**, comillas simples, ancho 100 (Prettier).
 - **Sin emojis en el código ni la UI** — íconos FontAwesome 6 vía CDN: `<i class="fa-solid fa-...">`.
 - **Flex, no grid.** Mobile-first: escribe el estilo base para móvil y usa `@media (min-width: 768px)` para subir. Verifica que no haya scroll horizontal.
-- Las variables SCSS de marca (`$BAKANO-PINK`, `$BAKANO-DARK`, `$BAKANO-LIGHT`, `$BAKANO-PURPLE`, `$BAKANO-GREEN`) se **auto-inyectan** en todo bloque `<style lang="scss">` vía `additionalData` en `vite.config.ts`. No pongas `@use` en los componentes.
+- Las variables SCSS de marca (`$BAKANO-PINK`, `$BAKANO-DARK`, `$BAKANO-LIGHT`, `$BAKANO-PURPLE`, `$BAKANO-GREEN`) se **auto-inyectan** en todo bloque `<style lang="scss">` vía `additionalData` en `vite.config.ts`. No pongas `@use` en los componentes. La excepción es `src/styles/comunidad.scss`: como no es hoja de entrada, importa las variables a mano.
 - Alias `@` → `./src`, funciona en imports TS y en rutas SCSS.
 - Tipografía: Outfit (títulos, 800), Plus Jakarta Sans (cuerpo), Space Grotesk (CTAs), Manrope (UI).
 
 ### Imágenes
 
-- `src/assets/portfolio/*.png` — capturas reales de los sitios del portafolio (1280×900). Regenerarlas con `agent-browser set viewport 1280 900` + `open` + `screenshot`.
-- Las fotos del equipo se sirven desde el Cloudinary de Bakano (cloud `mrp1wwq1`, carpeta `bakano/sesion-karen/`) con transformaciones `f_auto,q_auto,c_fill,g_auto` en la URL. Es el mismo CDN que usa bakano.ec.
+- `src/assets/portfolio/andersson.png` — captura real de anderssonboscan.ec (1280×900), el único
+  sitio del portafolio que se conserva. Regenerar con `agent-browser set viewport 1280 900` + `open` + `screenshot`.
+- El reel de Scarlett va **embebido** desde Instagram (`/reel/<code>/embed/`), no descargado.
 
 ### Notas de Vite
 

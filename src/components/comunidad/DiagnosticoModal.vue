@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { ref, watch, onUnmounted } from 'vue'
-import CupoForm from './CupoForm.vue'
-import { REEL_CHISME } from '@/data/reconstruccion'
+import DiagnosticoForm from './DiagnosticoForm.vue'
+import { califica, MINIMO_SEGUIDORES, REEL_URL } from '@/data/comunidad'
 
-const props = defineProps<{ abierto: boolean; plan?: string }>()
+const props = defineProps<{ abierto: boolean }>()
 const emit = defineEmits<{ (e: 'cerrar'): void }>()
 
 const enviado = ref(false)
 const nombre = ref('')
-const interes = ref('')
+const tamano = ref('')
 
-function onEnviado(n: string, i: string) {
+function onEnviado(n: string, t: string) {
   nombre.value = n
-  interes.value = i
+  tamano.value = t
   enviado.value = true
 }
 
@@ -33,28 +33,35 @@ onUnmounted(() => {
   <Teleport to="body">
     <Transition name="cm">
       <div v-if="abierto" class="cm" @click.self="emit('cerrar')">
-        <div class="cm__box" role="dialog" aria-modal="true" aria-label="Asegura tu cupo">
+        <div class="cm__box" role="dialog" aria-modal="true" aria-label="Cuéntanos de tu comunidad">
           <button class="cm__x" aria-label="Cerrar" @click="emit('cerrar')">
             <i class="fa-solid fa-xmark"></i>
           </button>
 
           <div class="cm__scroll">
-            <CupoForm v-if="!enviado" :key="String(abierto)" :plan="plan" @enviado="onEnviado" />
+            <DiagnosticoForm v-if="!enviado" :key="String(abierto)" @enviado="onEnviado" />
 
             <div v-else class="cm__ok">
               <i class="fa-solid fa-circle-check"></i>
               <h2>Listo, {{ nombre }}</h2>
 
-              <template v-if="interes === 'ayudar'">
-                <p>Gracias por el interés. El chisme completo está en el reel.</p>
-                <a class="cm__cta" :href="REEL_CHISME" target="_blank" rel="noopener">
-                  <i class="fa-brands fa-instagram"></i> Verlo y darnos like
+              <template v-if="califica(tamano)">
+                <p>Recibimos tus datos. Te escribimos por WhatsApp para agendar tu diagnóstico.</p>
+                <p class="cm__nota">Mientras tanto, mira cómo fue el proceso con Scarlett.</p>
+                <a class="cm__cta" :href="REEL_URL" target="_blank" rel="noopener">
+                  <i class="fa-brands fa-instagram"></i> Ver el reel
                 </a>
               </template>
 
               <template v-else>
-                <p>Tu cupo quedó apartado. Te escribimos por WhatsApp hoy mismo.</p>
-                <p class="cm__nota">Gracias por ayudarnos a reconstruir.</p>
+                <p>
+                  Hoy trabajamos con comunidades desde {{ MINIMO_SEGUIDORES }} seguidores. Igual
+                  guardamos tus datos: si tu comunidad crece o abrimos algo para tu tamaño, te
+                  escribimos.
+                </p>
+                <a class="cm__cta" :href="REEL_URL" target="_blank" rel="noopener">
+                  <i class="fa-brands fa-instagram"></i> Ver el caso de Scarlett
+                </a>
               </template>
             </div>
           </div>
@@ -65,7 +72,7 @@ onUnmounted(() => {
 </template>
 
 <style scoped lang="scss">
-@use '@/styles/reconstruccion.scss' as r;
+@use '@/styles/comunidad.scss' as r;
 
 .cm {
   position: fixed;
@@ -74,14 +81,13 @@ onUnmounted(() => {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  // El scroll vive dentro de la caja, no aquí: una caja más alta que el overlay
-  // con align-items distinto de flex-start deja su parte superior fuera de alcance.
+  // El scroll vive dentro de la caja, no aquí.
   overflow: hidden;
   background: rgba(#000, 0.72);
   backdrop-filter: blur(4px);
 
   &__box {
-    // Padding compartido: el pie pegajoso del formulario lo lee para sangrar igual.
+    // Padding compartido: el encabezado y el pie pegajosos del formulario lo leen.
     --cm-pad: 1.5rem;
 
     position: relative;
@@ -89,7 +95,7 @@ onUnmounted(() => {
     width: 100%;
     max-width: 460px;
     max-height: 100vh;
-    max-height: 100dvh; // dvh descuenta la barra del navegador móvil
+    max-height: 100dvh;
     flex-direction: column;
     overflow: hidden;
     border: 1px solid rgba(#fff, 0.12);
@@ -102,10 +108,7 @@ onUnmounted(() => {
   &__scroll {
     flex: 1;
     overflow-y: auto;
-    // Sin sangria arriba: el encabezado pegajoso del formulario aporta la suya
-    // y asi puede taparse el contenido que le pasa por detras.
     padding: 0 var(--cm-pad);
-    // Que el scroll no se propague a la página de atrás al llegar al tope.
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
   }
@@ -149,6 +152,7 @@ onUnmounted(() => {
     p {
       margin: 0 0 1.25rem;
       color: rgba($BAKANO-LIGHT, 0.75);
+      line-height: 1.55;
     }
   }
 
