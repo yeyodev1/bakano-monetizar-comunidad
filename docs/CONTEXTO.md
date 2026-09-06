@@ -58,8 +58,8 @@ Detalle en `CLAUDE.md`.
 |---|---|
 | GitHub | https://github.com/yeyodev1/bakano-monetizar-comunidad |
 | Reel origen | https://www.instagram.com/reel/Dc6XD6TFRvV/ |
-| Proyecto Vercel | **Pendiente de crear** (ver abajo) |
-| Dominio | **Pendiente.** Los canonicals apuntan a `https://comunidad.bakano.ec/` como supuesto |
+| Proyecto Vercel | `proyectos-de-diego/bakano-monetizar-comunidad`, conectado a GitHub (auto-deploy en push a `main`) |
+| Producción | https://comunidad.bakano.ec (dominio asignado en Vercel; falta el registro DNS en Cloudflare) |
 
 ## Estado real
 
@@ -71,17 +71,23 @@ Detalle en `CLAUDE.md`.
 - `api/lead.ts` adaptado: etapas `comunidad_view` / `comunidad_lead`, campos `usuario`,
   `tamano`, `oferta`, etiquetas nuevas.
 
+- Proyecto de Vercel creado, conectado al repo, con `GHL_WEBHOOK_URL`, `META_PIXEL_ID` y
+  `META_CAPI_TOKEN` copiados del proyecto de reconstrucción como Secrets de producción.
+  Primer deploy de producción hecho. La URL `*.vercel.app` redirige al SSO de Vercel
+  (Deployment Protection); el dominio propio no.
+- Dominio `comunidad.bakano.ec` asignado al proyecto en Vercel.
+
 **Pendiente, en orden:**
 
-1. **Crear el proyecto en Vercel** conectado a este repo y cargar las variables de
-   `.env.example` como Secrets. Sin eso, `/api/lead` no existe.
-2. **Decidir el dominio** y reemplazar `comunidad.bakano.ec` en `src/router/index.ts`,
-   `index.html`, `public/sitemap.xml`, `public/robots.txt` y `api/lead.ts`.
-3. **Workflow de GHL propio.** El `GHL_WEBHOOK_URL` de la landing anterior funciona técnicamente,
+1. **Registro DNS en Cloudflare** (bakano.ec usa nameservers de Cloudflare, no de Vercel):
+   `A comunidad 76.76.21.21`, sin proxy (nube gris), igual que `web.bakano.ec`. Vercel verifica
+   solo y emite el certificado. El `CLOUDFLARE_API_TOKEN` del entorno local está **inválido**.
+2. **Workflow de GHL propio.** El webhook copiado es el de reconstrucción: crea el contacto con
+   nombre y teléfono, pero ignora `tamano`, `oferta` y las etiquetas nuevas. El `GHL_WEBHOOK_URL` de la landing anterior funciona técnicamente,
    pero ese workflow mapea `interes`/`plan_nombre`, que ya no existen. Crear uno nuevo con el
    payload de `docs/configuracion-ghl.md`.
-4. Confirmar con Bakano el umbral de 20k, el total de 20 cupos y las opciones de "¿qué quieres venderle?".
-5. Imagen OG propia de la campaña: hoy usa `https://bakano.ec/image.png`.
+3. Confirmar con Bakano el umbral de 20k, el total de 20 cupos y las opciones de "¿qué quieres venderle?".
+4. Imagen OG propia de la campaña: hoy usa `https://bakano.ec/image.png`.
 
 ## Cosas que costaron descubrir
 

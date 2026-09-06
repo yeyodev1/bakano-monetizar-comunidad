@@ -54,8 +54,8 @@ Vue 3 + Vite 7 + TS, SCSS, `vue-router`. Sin Pinia en la landing nueva (el funne
 
 El SEO **no** se define en los componentes: vive en el `meta` de cada ruta y el hook `afterEach` del router lo escribe en el `<head>` (title, description, og:*, canonical). Para cambiar el SEO de una página, edita su `meta` en el router.
 
-El dominio de los canonicals (`comunidad.bakano.ec`) es un **supuesto** pendiente de confirmar.
-Está en `src/router/index.ts`, `index.html`, `public/sitemap.xml`, `public/robots.txt` y `api/lead.ts`.
+El dominio es `comunidad.bakano.ec` y está en `src/router/index.ts`, `index.html`,
+`public/sitemap.xml`, `public/robots.txt`, `public/llms.txt` y `api/lead.ts`.
 
 Archivos obsoletos, no usar: `HomeView.vue`, `ThankYouView.vue`, `ToolsView.vue`.
 
@@ -108,8 +108,9 @@ Variables requeridas — plantilla en `.env.example`:
 
 ### Despliegue
 
-Vercel, conectado a GitHub (`yeyodev1/bakano-monetizar-comunidad`): cada push a `main`
-redespliega. **El proyecto de Vercel todavía no está creado** (ver `docs/CONTEXTO.md`).
+Vercel, proyecto `proyectos-de-diego/bakano-monetizar-comunidad`, conectado a GitHub: **cada push
+a `main` redespliega**. Dominio `comunidad.bakano.ec` (DNS en Cloudflare, registro A a
+`76.76.21.21`). La URL `*.vercel.app` está detrás del SSO de Vercel; el dominio propio no.
 `vercel.json` tiene el rewrite de SPA — sin él, entrar directo a una ruta interna da 404.
 
 ### Cómo salen los leads
