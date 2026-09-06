@@ -2,8 +2,9 @@
 import { ref, watch, onUnmounted } from 'vue'
 import DiagnosticoForm from './DiagnosticoForm.vue'
 import { califica, MINIMO_SEGUIDORES, REEL_URL } from '@/data/comunidad'
+import type { Cupos } from '@/composables/useCupos'
 
-const props = defineProps<{ abierto: boolean }>()
+const props = defineProps<{ abierto: boolean; cupos: Cupos }>()
 const emit = defineEmits<{ (e: 'cerrar'): void }>()
 
 const enviado = ref(false)
@@ -33,20 +34,28 @@ onUnmounted(() => {
   <Teleport to="body">
     <Transition name="cm">
       <div v-if="abierto" class="cm" @click.self="emit('cerrar')">
-        <div class="cm__box" role="dialog" aria-modal="true" aria-label="Cuéntanos de tu comunidad">
+        <div class="cm__box" role="dialog" aria-modal="true" aria-label="Aparta tu cupo">
           <button class="cm__x" aria-label="Cerrar" @click="emit('cerrar')">
             <i class="fa-solid fa-xmark"></i>
           </button>
 
           <div class="cm__scroll">
-            <DiagnosticoForm v-if="!enviado" :key="String(abierto)" @enviado="onEnviado" />
+            <DiagnosticoForm
+              v-if="!enviado"
+              :key="String(abierto)"
+              :cupos="cupos"
+              @enviado="onEnviado"
+            />
 
             <div v-else class="cm__ok">
               <i class="fa-solid fa-circle-check"></i>
               <h2>Listo, {{ nombre }}</h2>
 
               <template v-if="califica(tamano)">
-                <p>Recibimos tus datos. Te escribimos por WhatsApp para agendar tu diagnóstico.</p>
+                <p>
+                  Tu cupo de {{ cupos.mes }} quedó apartado. Te escribimos por WhatsApp hoy mismo
+                  para agendar tu diagnóstico.
+                </p>
                 <p class="cm__nota">Mientras tanto, mira cómo fue el proceso con Scarlett.</p>
                 <a class="cm__cta" :href="REEL_URL" target="_blank" rel="noopener">
                   <i class="fa-brands fa-instagram"></i> Ver el reel
@@ -55,9 +64,9 @@ onUnmounted(() => {
 
               <template v-else>
                 <p>
-                  Hoy trabajamos con comunidades desde {{ MINIMO_SEGUIDORES }} seguidores. Igual
-                  guardamos tus datos: si tu comunidad crece o abrimos algo para tu tamaño, te
-                  escribimos.
+                  Los cupos de {{ cupos.mes }} son para comunidades desde
+                  {{ MINIMO_SEGUIDORES }} seguidores. Igual guardamos tus datos: si tu comunidad
+                  crece o abrimos algo para tu tamaño, te escribimos.
                 </p>
                 <a class="cm__cta" :href="REEL_URL" target="_blank" rel="noopener">
                   <i class="fa-brands fa-instagram"></i> Ver el caso de Scarlett

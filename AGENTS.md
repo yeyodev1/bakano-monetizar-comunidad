@@ -33,6 +33,10 @@ SEO is set in the router's `afterEach` hook from each route's `meta`. Edit route
 **All landing copy comes from `src/data/comunidad.ts`**, which in turn comes from the reel
 transcribed in `docs/transcripciones-reels.md`. Do not invent numbers, prices, deadlines, or cases.
 
+**Monthly slots** (`src/composables/useCupos.ts`): urgency counter, not real stock. Day 1 → 20,
+last day → 1, linear, resets monthly; computed from browser time. Shown in hero, contact,
+sticky `CuposBar`, form and modal. Change `CUPOS_INICIALES` to change the total.
+
 Obsolete files (not in router, do not use): `HomeView.vue`, `ThankYouView.vue`, `ToolsView.vue`.
 
 ## Lead pipeline

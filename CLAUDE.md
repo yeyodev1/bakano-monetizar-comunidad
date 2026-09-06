@@ -31,8 +31,9 @@ Todo el contenido sale de un reel de @bakano.ec (el caso de Scarlett) y no debe 
 | Resultado | $1,000 el día del lanzamiento; siguió facturando después |
 | Segundo caso | Andersson Boscán: la audiencia ya la tenía, se concretó su proceso de ventas |
 | Qué hace Bakano | Diagnóstico de fortalezas → empaquetar oferta → web + conexión con redes → lanzamiento |
-| Precio / plazo | **No hay.** El reel no los da; la landing no los inventa |
+| Precio | **No hay.** El reel no lo da; la landing no lo inventa |
 | Umbral 20k | Lo fijó Bakano para la campaña; no sale del reel |
+| Cupos | **20 al mes**, mecánica de urgencia de Bakano (no del reel). Ver "Cupos mensuales" |
 
 La transcripción y el caption del reel están en `docs/transcripciones-reels.md`; el porqué de
 cada decisión de copy, en `docs/CONTEXTO.md`. **Léelos antes de tocar el mensaje.**
@@ -58,14 +59,27 @@ Está en `src/router/index.ts`, `index.html`, `public/sitemap.xml`, `public/robo
 
 Archivos obsoletos, no usar: `HomeView.vue`, `ThankYouView.vue`, `ToolsView.vue`.
 
+### Cupos mensuales (`src/composables/useCupos.ts`)
+
+La urgencia de la landing es un contador determinista, no un stock real:
+**día 1 del mes → 20 cupos, último día → 1, lineal entre medio, y vuelve a 20 al cambiar de mes.**
+Se calcula con la hora del navegador; dos personas el mismo día ven el mismo número.
+`calcularCupos(fecha)` es pura (fácil de probar); `useCupos()` la hace reactiva y se refresca sola
+si la pestaña cruza la medianoche.
+
+El número aparece en: badge y meter del hero, subtítulo de "¿Es para ti?", título y meter de
+contacto, barra fija inferior (`CuposBar`, aparece tras el hero), encabezado y botón del
+formulario, y la confirmación del modal. El lead manda `mes` y `cupos_restantes` a GHL.
+Para cambiar el total, toca `CUPOS_INICIALES` y nada más.
+
 ### Contenido y componentes de la landing
 
 - `src/data/comunidad.ts` — **única fuente del contenido**: reel, historia de Scarlett, pasos del
   proceso, casos, requisitos, y las opciones del formulario (`tamanos`, `ofertas`). La función
   `califica(tamano)` decide quién entra al pipeline; el servidor replica el mismo criterio.
 - `src/components/comunidad/` — `CasoSection`, `ProcesoSection`, `CasosSection`,
-  `ParaQuienSection`, `DiagnosticoModal` + `DiagnosticoForm`, más `PhoneField`, `CountryPicker`,
-  `ScrollCue`, `ScrollProgress` reutilizables.
+  `ParaQuienSection`, `DiagnosticoModal` + `DiagnosticoForm`, `CuposMeter`, `CuposBar`, más
+  `PhoneField`, `CountryPicker`, `ScrollCue`, `ScrollProgress` reutilizables.
 - `src/styles/comunidad.scss` — mixins compartidos (`seccion`, `titulo`, `subtitulo`, `cta`, `campo`).
 
 ### El backend (`api/lead.ts`)

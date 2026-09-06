@@ -34,13 +34,13 @@ const router = createRouter({
       component: ComunidadView,
       meta: {
         title:
-          'Monetiza tu comunidad | Bakano \u2014 Para creadores con m\u00e1s de 20k seguidores',
+          'Monetiza tu comunidad | Bakano \u2014 20 cupos al mes para creadores con m\u00e1s de 20k',
         description:
-          'Tienes una comunidad grande pero no factura. Empaquetamos tu oferta, levantamos tu web y conectamos tus redes con un proceso de ventas. Con Scarlett: $1,000 el d\u00eda del lanzamiento.',
+          'Tienes una comunidad grande pero no factura. Empaquetamos tu oferta, levantamos tu web y conectamos tus redes con un proceso de ventas. Con Scarlett: $1,000 el d\u00eda del lanzamiento. Solo 20 cupos al mes.',
         canonical: 'https://comunidad.bakano.ec/',
         ogTitle: 'Tienes una comunidad grande. Pero no factura.',
         ogDescription:
-          'Para creadores con m\u00e1s de 20k seguidores. El problema no es el algoritmo ni la pauta: es estructura. Te ayudamos a empaquetar y vender.',
+          '20 cupos al mes para creadores con m\u00e1s de 20k seguidores. El problema no es el algoritmo ni la pauta: es estructura. Te ayudamos a empaquetar y vender.',
         ogUrl: 'https://comunidad.bakano.ec/',
       } satisfies RouteMeta,
     },

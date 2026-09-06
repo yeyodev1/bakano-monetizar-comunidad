@@ -32,7 +32,10 @@ por WhatsApp. Si en algún momento hay precio público, va en `src/data/comunida
 
 ### Decisiones editoriales
 
-- **Sin precio, sin cupos, sin urgencia falsa.** No hay dato que lo respalde.
+- **Sin precio.** El reel no lo da y la landing no lo inventa.
+- **Cupos mensuales como urgencia** (decisión del usuario, 2026-09-06): 20 cupos por mes que bajan
+  linealmente hasta 1 el último día y se reinician el día 1. No es stock real; es determinista
+  para que todos vean lo mismo el mismo día. Lógica en `src/composables/useCupos.ts`.
 - **Scarlett se nombra solo por su nombre**, como en el reel. No se pone apellido ni handle.
 - **Andersson Boscán** ya era cliente de web (anderssonboscan.ec); su captura está en
   `src/assets/portfolio/andersson.png`. Es el único sitio del portafolio que se conserva.
@@ -77,7 +80,7 @@ Detalle en `CLAUDE.md`.
 3. **Workflow de GHL propio.** El `GHL_WEBHOOK_URL` de la landing anterior funciona técnicamente,
    pero ese workflow mapea `interes`/`plan_nombre`, que ya no existen. Crear uno nuevo con el
    payload de `docs/configuracion-ghl.md`.
-4. Confirmar con Bakano el umbral de 20k y las opciones de "¿qué quieres venderle?".
+4. Confirmar con Bakano el umbral de 20k, el total de 20 cupos y las opciones de "¿qué quieres venderle?".
 5. Imagen OG propia de la campaña: hoy usa `https://bakano.ec/image.png`.
 
 ## Cosas que costaron descubrir

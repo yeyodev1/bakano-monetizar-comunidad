@@ -54,6 +54,8 @@ Lo que falta es un **workflow de GHL para esta campaña**. El de reconstrucción
   "oferta": "servicio",
   "oferta_nombre": "Un servicio (asesorías, sesiones, mentorías)",
   "origen": "landing-comunidad",
+  "mes": "septiembre",
+  "cupos_restantes": "17",
   "tags": "landing-comunidad,comunidad-20k-50k,oferta-servicio,lead-calificado",
   "fbclid": "", "fbc": "", "fbp": "", "utm_source": "", "…": ""
 }
@@ -70,6 +72,8 @@ Lo que falta es un **workflow de GHL para esta campaña**. El de reconstrucción
 | `nurture` | Menos de 20k |
 
 `tamano` y `oferta` son los ids de `src/data/comunidad.ts`. Si se cambian ahí, cambian aquí.
+`mes` y `cupos_restantes` son el contador de urgencia del día en que entró el lead
+(`src/composables/useCupos.ts`); sirven para saber con qué mensaje llegó.
 
 ## Meta (CAPI)
 

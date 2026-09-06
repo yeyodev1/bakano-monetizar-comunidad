@@ -9,6 +9,9 @@ import ParaQuienSection from '@/components/comunidad/ParaQuienSection.vue'
 import DiagnosticoModal from '@/components/comunidad/DiagnosticoModal.vue'
 import ScrollCue from '@/components/comunidad/ScrollCue.vue'
 import ScrollProgress from '@/components/comunidad/ScrollProgress.vue'
+import CuposMeter from '@/components/comunidad/CuposMeter.vue'
+import CuposBar from '@/components/comunidad/CuposBar.vue'
+import { useCupos } from '@/composables/useCupos'
 import { trackStage } from '@/utils/ghl'
 import { captureFbParams } from '@/utils/fbclid'
 import { MINIMO_SEGUIDORES, REEL_URL } from '@/data/comunidad'
@@ -16,6 +19,7 @@ import logo from '@/assets/logos/bakano-light.png'
 
 const modalAbierto = ref(false)
 const abrir = () => (modalAbierto.value = true)
+const cupos = useCupos()
 
 /** Entrada del hero + reveals por scroll. Se salta entero si el usuario pidió menos movimiento. */
 function animar() {
@@ -29,6 +33,7 @@ function animar() {
     .from('.lp__title', { y: 26, opacity: 0, duration: 0.85 }, '-=0.4')
     .from('.lp__lead', { y: 20, opacity: 0 }, '-=0.55')
     .from('.lp__hero .lp__cta', { y: 18, opacity: 0, scale: 0.96 }, '-=0.5')
+    .from('.lp__hero .meter', { y: 14, opacity: 0 }, '-=0.4')
     .from('.lp__nota', { opacity: 0 }, '-=0.35')
 
   const reveal = (sel: string) =>
@@ -70,8 +75,9 @@ onBeforeUnmount(() => {
 
     <section class="lp__hero">
       <img :src="logo" alt="Bakano" class="lp__logo" />
-      <span class="lp__badge">
-        <i class="fa-solid fa-users"></i> Para creadores con más de {{ MINIMO_SEGUIDORES }}
+      <span class="lp__badge" :class="`is-${cupos.urgencia}`">
+        <i class="fa-solid fa-fire"></i>
+        Quedan {{ cupos.restantes }} cupos de {{ cupos.mes }}
       </span>
       <h1 class="lp__title">
         Tienes una comunidad grande.<br />
@@ -83,9 +89,16 @@ onBeforeUnmount(() => {
         tus redes con un proceso de ventas. Con Scarlett funcionó desde el minuto uno:
         <strong>$1,000 el día del lanzamiento</strong>.
       </p>
+      <p class="lp__lead lp__lead--cupos">
+        Para hacerlo bien tomamos <strong>{{ cupos.iniciales }} creadores al mes</strong>, con
+        comunidades desde <strong>{{ MINIMO_SEGUIDORES }}</strong
+        >. Cada día que pasa hay un cupo menos, y el {{ cupos.ultimoDia }} de {{ cupos.mes }} se
+        cierra el grupo.
+      </p>
       <button class="lp__cta" @click="abrir">
-        Quiero monetizar mi comunidad <i class="fa-solid fa-arrow-right"></i>
+        Apartar mi cupo de {{ cupos.mes }} <i class="fa-solid fa-arrow-right"></i>
       </button>
+      <CuposMeter :cupos="cupos" class="lp__meter" />
       <p class="lp__nota">Sin pauta obligatoria. Sin fórmulas mágicas. Estructura y ejecución.</p>
 
       <ScrollCue destino="caso" etiqueta="El caso de Scarlett" />
@@ -94,17 +107,22 @@ onBeforeUnmount(() => {
     <CasoSection />
     <ProcesoSection />
     <CasosSection />
-    <ParaQuienSection />
+    <ParaQuienSection :cupos="cupos" />
 
     <section id="contacto" class="lp__contacto">
-      <h2 class="lp__h2">Deja de improvisar con tu comunidad</h2>
+      <h2 class="lp__h2">
+        Quedan {{ cupos.restantes }} cupos de {{ cupos.mes }}.
+        <em>El {{ cupos.ultimoDia }} se cierra.</em>
+      </h2>
       <p class="lp__sub">
-        Cuéntanos de tu comunidad y qué quieres venderle. Te escribimos por WhatsApp para agendar un
-        diagnóstico.
+        Cuéntanos de tu comunidad y qué quieres venderle. Te escribimos por WhatsApp para agendar tu
+        diagnóstico y apartar tu lugar. Si se acaban, el siguiente grupo entra en
+        {{ cupos.mesSiguiente }}.
       </p>
       <button class="lp__cta" @click="abrir">
-        Quiero mi diagnóstico <i class="fa-solid fa-arrow-right"></i>
+        Apartar mi cupo <i class="fa-solid fa-arrow-right"></i>
       </button>
+      <CuposMeter :cupos="cupos" compacto class="lp__meter" />
       <a class="lp__reel" :href="REEL_URL" target="_blank" rel="noopener">
         ¿Todavía no viste el reel? Míralo y déjanos un like
         <i class="fa-brands fa-instagram"></i>
@@ -120,7 +138,8 @@ onBeforeUnmount(() => {
       </nav>
     </footer>
 
-    <DiagnosticoModal :abierto="modalAbierto" @cerrar="modalAbierto = false" />
+    <CuposBar :cupos="cupos" :oculta="modalAbierto" @abrir="abrir" />
+    <DiagnosticoModal :abierto="modalAbierto" :cupos="cupos" @cerrar="modalAbierto = false" />
   </main>
 </template>
 
@@ -166,6 +185,10 @@ onBeforeUnmount(() => {
     font-size: 0.78rem;
     letter-spacing: 0.04em;
     text-transform: uppercase;
+
+    &.is-alta {
+      animation: latir 1.6s ease-in-out infinite;
+    }
   }
 
   &__title {
@@ -192,10 +215,24 @@ onBeforeUnmount(() => {
     @media (min-width: 768px) {
       font-size: 1.08rem;
     }
+
+    &--cupos {
+      margin-top: 0.9rem;
+      color: rgba($BAKANO-LIGHT, 0.7);
+      font-size: 0.95rem;
+    }
+  }
+
+  &__meter {
+    margin-top: 1.5rem;
   }
 
   &__h2 {
     @include r.titulo;
+    em {
+      color: $BAKANO-PINK;
+      font-style: normal;
+    }
   }
   &__sub {
     @include r.subtitulo;
@@ -232,7 +269,8 @@ onBeforeUnmount(() => {
     flex-direction: column;
     align-items: center;
     gap: 0.8rem;
-    padding: 2.5rem 1.5rem 3rem;
+    // Aire extra abajo para que la barra fija de cupos no tape los enlaces legales.
+    padding: 2.5rem 1.5rem 6.5rem;
     border-top: 1px solid rgba(#fff, 0.08);
     text-align: center;
     img {
@@ -256,6 +294,22 @@ onBeforeUnmount(() => {
         color: $BAKANO-PINK;
       }
     }
+  }
+}
+
+@keyframes latir {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba($BAKANO-PINK, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba($BAKANO-PINK, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp__badge.is-alta {
+    animation: none;
   }
 }
 </style>

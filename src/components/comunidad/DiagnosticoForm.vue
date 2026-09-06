@@ -4,7 +4,9 @@ import PhoneField from './PhoneField.vue'
 import { trackStage, generateEventId } from '@/utils/ghl'
 import { getStoredFbParams } from '@/utils/fbclid'
 import { tamanos, ofertas, califica, etiquetaTamano, etiquetaOferta } from '@/data/comunidad'
+import type { Cupos } from '@/composables/useCupos'
 
+const props = defineProps<{ cupos: Cupos }>()
 const emit = defineEmits<{ (e: 'enviado', nombre: string, tamano: string): void }>()
 
 const form = ref({ nombre: '', apellido: '', telefono: '', usuario: '', tamano: '', oferta: '' })
@@ -47,6 +49,8 @@ async function enviar() {
       oferta: form.value.oferta,
       oferta_nombre: etiquetaOferta(form.value.oferta),
       origen: 'landing-comunidad',
+      mes: props.cupos.mes,
+      cupos_restantes: String(props.cupos.restantes),
       ...getStoredFbParams(),
     })
     // Mismo eventID que el servidor manda a CAPI: así Meta deduplica browser vs server.
@@ -68,8 +72,11 @@ async function enviar() {
 <template>
   <div class="cf">
     <div class="cf__enc">
-      <h2>Cuéntanos de tu comunidad</h2>
-      <p class="cf__sub">Te escribimos por WhatsApp para agendar el diagnóstico.</p>
+      <h2>Aparta tu cupo de {{ cupos.mes }}</h2>
+      <p class="cf__sub">
+        <strong :class="`is-${cupos.urgencia}`">Quedan {{ cupos.restantes }}</strong> · Te
+        escribimos por WhatsApp hoy mismo.
+      </p>
     </div>
 
     <div class="cf__fila">
@@ -105,7 +112,7 @@ async function enviar() {
     <div class="cf__pie">
       <button class="cf__cta" :disabled="!valido || enviando" @click="enviar">
         <i v-if="enviando" class="fa-solid fa-spinner fa-spin"></i>
-        {{ enviando ? 'Enviando…' : 'Quiero mi diagnóstico' }}
+        {{ enviando ? 'Enviando…' : 'Apartar mi cupo' }}
       </button>
 
       <p v-if="error" class="cf__error">{{ error }}</p>
@@ -153,6 +160,12 @@ async function enviar() {
     margin: 0.45rem 0 0;
     color: rgba($BAKANO-LIGHT, 0.62);
     font-size: 0.92rem;
+    strong {
+      color: $BAKANO-LIGHT;
+      &.is-alta {
+        color: $BAKANO-PINK;
+      }
+    }
   }
 
   &__fila {

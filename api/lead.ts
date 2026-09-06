@@ -130,6 +130,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     'oferta',
     'oferta_nombre',
     'origen',
+    'mes',
+    'cupos_restantes',
     'origen_url',
     'fbclid',
     'fbc',

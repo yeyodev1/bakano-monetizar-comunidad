@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import { requisitos } from '@/data/comunidad'
+import type { Cupos } from '@/composables/useCupos'
 import ScrollCue from './ScrollCue.vue'
+
+defineProps<{ cupos: Cupos }>()
 </script>
 
 <template>
   <section id="para-quien" class="pq">
     <h2 class="pq__h2">¿Es para ti?</h2>
-    <p class="pq__sub">Trabajamos con pocos creadores a la vez. Esto es lo que buscamos.</p>
+    <p class="pq__sub">
+      Abrimos {{ cupos.iniciales }} cupos al mes y en {{ cupos.mes }} quedan {{ cupos.restantes }}.
+      Esto es lo que buscamos en cada uno.
+    </p>
 
     <ul class="pq__lista">
       <li v-for="r in requisitos" :key="r.titulo" class="pq__item">
@@ -23,7 +29,7 @@ import ScrollCue from './ScrollCue.vue'
       No vendemos pauta ni trucos de algoritmo. Si lo que te falta es estructura, hablemos.
     </p>
 
-    <ScrollCue destino="contacto" etiqueta="Quiero mi diagnóstico" />
+    <ScrollCue destino="contacto" etiqueta="Apartar mi cupo" />
   </section>
 </template>
 
