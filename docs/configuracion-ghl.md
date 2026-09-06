@@ -24,10 +24,12 @@ Lo que falta es un **workflow de GHL para esta campaña**. El de reconstrucción
 | Campo GHL | Variable del webhook |
 |---|---|
 | Phone | `Inbound Webhook Trigger . Telefono` |
+| Email | `Inbound Webhook Trigger . Email` |
 | First name | `Inbound Webhook Trigger . Nombre` |
 | Last name | `Inbound Webhook Trigger . Apellido` |
 | Contact source | `Inbound Webhook Trigger . Origen` |
-| Website / campo custom | `Inbound Webhook Trigger . Instagram` |
+| Campo custom "Instagram / comunidad" | `Inbound Webhook Trigger . Instagram` (lo que escribió: @ o nombre de comunidad) |
+| Website | `Inbound Webhook Trigger . Instagram Url` (solo viene si escribió un handle) |
 
   - Acción **Add Tag** leyendo `Inbound Webhook Trigger . Tags`.
   - Condición por `Inbound Webhook Trigger . Etapa`: solo `comunidad_lead` crea contacto. Las
@@ -47,8 +49,9 @@ Lo que falta es un **workflow de GHL para esta campaña**. El de reconstrucción
   "nombre": "Scarlett", "apellido": "Pérez",
   "full_name": "Scarlett Pérez",
   "telefono": "+593984934039",
-  "usuario": "scarlett",
-  "instagram": "https://www.instagram.com/scarlett/",
+  "email": "scarlett@correo.com",
+  "instagram": "scarlett",
+  "instagram_url": "https://www.instagram.com/scarlett/",
   "tamano": "20k-50k",
   "tamano_nombre": "Entre 20k y 50k",
   "oferta": "servicio",
@@ -78,6 +81,7 @@ Lo que falta es un **workflow de GHL para esta campaña**. El de reconstrucción
 ## Meta (CAPI)
 
 - `Lead` cuando la comunidad califica (≥ 20k); `Contact` cuando no.
+- `user_data` lleva email, teléfono, nombre y apellido hasheados (SHA-256), más `fbc`/`fbp` en claro.
 - Sin `value`: la campaña no tiene precio público.
 - `content_name`: `Comunidad <tamaño>`; `content_category`: la oferta.
 - El navegador dispara el mismo evento con el mismo `eventID`, así Meta deduplica.

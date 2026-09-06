@@ -32,6 +32,9 @@ const hashPhone = (v: string) => {
 
 const str = (v: unknown) => (typeof v === 'string' ? v.trim() : '')
 
+/** Un handle de Instagram: letras, números, puntos y guiones bajos, sin espacios. */
+const esHandle = (v: string) => /^[a-z0-9._]{1,30}$/i.test(v)
+
 /** Sólo comunidades desde 20k entran al pipeline. Mismo criterio que `califica` en el front. */
 const califica = (tamano: string) => tamano !== '' && tamano !== 'menos-20k'
 
@@ -72,6 +75,7 @@ async function enviarACapi(
     client_user_agent: ua,
   }
   if (body.telefono) user_data.ph = [hashPhone(body.telefono)]
+  if (body.email) user_data.em = [hash(body.email)]
   if (body.nombre) user_data.fn = [hash(body.nombre)]
   if (body.apellido) user_data.ln = [hash(body.apellido)]
   // fbc y fbp van en claro: Meta los quiere sin hashear.
@@ -124,7 +128,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     'nombre',
     'apellido',
     'telefono',
-    'usuario',
+    'email',
+    'instagram',
     'tamano',
     'tamano_nombre',
     'oferta',
@@ -152,8 +157,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json({ ok: true, etapa })
   }
 
-  if (!datos.nombre || !datos.telefono) {
-    return res.status(400).json({ ok: false, error: 'Faltan nombre o telefono' })
+  if (!datos.nombre || !datos.telefono || !datos.email) {
+    return res.status(400).json({ ok: false, error: 'Faltan nombre, telefono o email' })
   }
 
   const tags = etiquetas(datos.tamano, datos.oferta)
@@ -169,7 +174,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ...datos,
       tags: tags.join(','), // GHL mapea mejor una cadena separada por comas
       full_name: `${datos.nombre} ${datos.apellido}`.trim(),
-      instagram: datos.usuario ? `https://www.instagram.com/${datos.usuario}/` : '',
+      // Si lo que escribió parece un handle (sin espacios), armamos el enlace al perfil.
+      instagram_url: esHandle(datos.instagram)
+        ? `https://www.instagram.com/${datos.instagram}/`
+        : '',
     }),
     // Sólo una comunidad que califica es un Lead para Meta; el resto es un contacto.
     enviarACapi(datos, califica(datos.tamano) ? 'Lead' : 'Contact', event_id, ip, ua),

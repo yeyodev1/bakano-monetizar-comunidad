@@ -9,7 +9,18 @@ import type { Cupos } from '@/composables/useCupos'
 const props = defineProps<{ cupos: Cupos }>()
 const emit = defineEmits<{ (e: 'enviado', nombre: string, tamano: string): void }>()
 
-const form = ref({ nombre: '', apellido: '', telefono: '', usuario: '', tamano: '', oferta: '' })
+const form = ref({
+  nombre: '',
+  apellido: '',
+  telefono: '',
+  email: '',
+  instagram: '',
+  tamano: '',
+  oferta: '',
+})
+
+/** Validación mínima: algo@algo.tld. El servidor no revalida; GHL rechaza lo que no sea correo. */
+const emailValido = computed(() => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.value.email.trim()))
 const enviando = ref(false)
 const error = ref('')
 
@@ -18,13 +29,17 @@ const valido = computed(
     form.value.nombre.trim().length > 1 &&
     form.value.apellido.trim().length > 1 &&
     form.value.telefono !== '' &&
-    form.value.usuario.trim().length > 1 &&
+    emailValido.value &&
+    form.value.instagram.trim().length > 1 &&
     form.value.tamano !== '' &&
     form.value.oferta !== '',
 )
 
-/** Guarda el @ sin la arroba ni la URL: solo el usuario. */
-const limpiarUsuario = (u: string) =>
+/**
+ * Acepta @usuario, la URL del perfil o el nombre de la comunidad. Si es un handle, lo deja
+ * limpio (sin @ ni URL) para que el servidor pueda armar el enlace al perfil.
+ */
+const limpiarInstagram = (u: string) =>
   u
     .trim()
     .replace(/^https?:\/\/(www\.)?(instagram|tiktok)\.com\//i, '')
@@ -43,7 +58,8 @@ async function enviar() {
       nombre: form.value.nombre.trim(),
       apellido: form.value.apellido.trim(),
       telefono: form.value.telefono,
-      usuario: limpiarUsuario(form.value.usuario),
+      email: form.value.email.trim().toLowerCase(),
+      instagram: limpiarInstagram(form.value.instagram),
       tamano,
       tamano_nombre: etiquetaTamano(tamano),
       oferta: form.value.oferta,
@@ -87,8 +103,27 @@ async function enviar() {
     <PhoneField v-model="form.telefono" />
 
     <label class="cf__campo">
-      Tu usuario principal
-      <input v-model="form.usuario" type="text" placeholder="@tucuenta" autocapitalize="none" />
+      Tu correo
+      <input
+        v-model="form.email"
+        type="email"
+        placeholder="tu@correo.com"
+        autocomplete="email"
+        autocapitalize="none"
+        :class="{ 'is-mal': form.email && !emailValido }"
+      />
+    </label>
+
+    <label class="cf__campo">
+      Tu Instagram o el nombre de tu comunidad
+      <input
+        v-model="form.instagram"
+        type="text"
+        placeholder="@tucuenta"
+        autocapitalize="none"
+        autocomplete="off"
+      />
+      <small>Es lo primero que revisamos antes de escribirte.</small>
     </label>
 
     <p class="cf__pregunta">¿De qué tamaño es tu comunidad?</p>
@@ -192,6 +227,14 @@ async function enviar() {
     input {
       min-width: 0;
       @include r.campo;
+      &.is-mal {
+        border-color: #ff8095;
+      }
+    }
+    small {
+      color: rgba($BAKANO-LIGHT, 0.45);
+      font-size: 0.76rem;
+      font-weight: 400;
     }
   }
 

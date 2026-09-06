@@ -70,6 +70,10 @@ si la pestaña cruza la medianoche.
 El número aparece en: badge y meter del hero, subtítulo de "¿Es para ti?", título y meter de
 contacto, barra fija inferior (`CuposBar`, aparece tras el hero), encabezado y botón del
 formulario, y la confirmación del modal. El lead manda `mes` y `cupos_restantes` a GHL.
+
+El formulario pide **nombre, apellido, WhatsApp, email e Instagram o nombre de la comunidad**
+(campo `instagram`; si es un handle el servidor añade `instagram_url`), más tamaño y oferta.
+Email e Instagram son obligatorios: son lo primero que Bakano revisa antes de escribir.
 Para cambiar el total, toca `CUPOS_INICIALES` y nada más.
 
 ### Contenido y componentes de la landing
