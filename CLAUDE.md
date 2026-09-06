@@ -71,9 +71,11 @@ El número aparece en: badge y meter del hero, subtítulo de "¿Es para ti?", t�
 contacto, barra fija inferior (`CuposBar`, aparece tras el hero), encabezado y botón del
 formulario, y la confirmación del modal. El lead manda `mes` y `cupos_restantes` a GHL.
 
-El formulario pide **nombre, apellido, WhatsApp, email e Instagram o nombre de la comunidad**
-(campo `instagram`; si es un handle el servidor añade `instagram_url`), más tamaño y oferta.
-Email e Instagram son obligatorios: son lo primero que Bakano revisa antes de escribir.
+El formulario pide **nombre, apellido, WhatsApp, email, Instagram y nombre de la comunidad**,
+todos obligatorios, más tamaño y oferta. El servidor añade `instagram_url` si el handle es válido
+y arma `notas`: un resumen del lead **con emojis y saltos de línea** para el campo de notas de
+GHL. Es la única excepción a la regla de "sin emojis": lo pidió Bakano para leer el CRM de un
+vistazo, y nunca se muestra en la UI.
 Para cambiar el total, toca `CUPOS_INICIALES` y nada más.
 
 ### Contenido y componentes de la landing
@@ -142,7 +144,7 @@ El **access token de CAPI es secreto de servidor**: nunca en el bundle de Vite n
 ### Convenciones
 
 - **Sin punto y coma**, comillas simples, ancho 100 (Prettier).
-- **Sin emojis en el código ni la UI** — íconos FontAwesome 6 vía CDN: `<i class="fa-solid fa-...">`.
+- **Sin emojis en el código ni la UI** — íconos FontAwesome 6 vía CDN: `<i class="fa-solid fa-...">`. Única excepción: el campo `notas` que `api/lead.ts` manda a GHL.
 - **Flex, no grid.** Mobile-first: escribe el estilo base para móvil y usa `@media (min-width: 768px)` para subir. Verifica que no haya scroll horizontal.
 - Las variables SCSS de marca (`$BAKANO-PINK`, `$BAKANO-DARK`, `$BAKANO-LIGHT`, `$BAKANO-PURPLE`, `$BAKANO-GREEN`) se **auto-inyectan** en todo bloque `<style lang="scss">` vía `additionalData` en `vite.config.ts`. No pongas `@use` en los componentes. La excepción es `src/styles/comunidad.scss`: como no es hoja de entrada, importa las variables a mano.
 - Alias `@` → `./src`, funciona en imports TS y en rutas SCSS.

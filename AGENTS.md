@@ -24,7 +24,7 @@ Two independent flows share the router (`src/router/index.ts`):
 
 - `/` → `ComunidadView.vue` — **the active landing**. Single page for creators with 20k+ followers
   who want to monetize their community. Sections: hero → Scarlett case → process → cases →
-  "is this for you" → contact. Lead form lives in `DiagnosticoModal` + `DiagnosticoForm` (name, WhatsApp, email, Instagram or community name, size, offer; all required).
+  "is this for you" → contact. Lead form lives in `DiagnosticoModal` + `DiagnosticoForm` (name, WhatsApp, email, Instagram, community name, size, offer; all required). `api/lead.ts` also sends `notas`, an emoji summary for the GHL contact notes — the one place emojis are allowed.
 - `/registro-vsl-tr` → legacy VSL funnel (`FunnelView` → `/ver-video` → `/agendar` → `/cita-confirmada`, `/sin-espacio`, `/calificar`). Untouched.
 - `/politicas-privacidad`, `/aviso-legal` — legal pages.
 
@@ -56,7 +56,7 @@ Browser → POST /api/lead (Vercel serverless) ─┬→ GHL inbound webhook →
 ## Pending (see `docs/CONTEXTO.md`)
 - Vercel project not created yet.
 - Domain undecided: `comunidad.bakano.ec` is a placeholder in router, `index.html`, `public/`, `api/lead.ts`.
-- GHL workflow for this campaign not built yet.
+- GHL workflow: webhook configured in Vercel; map `email`, `instagram`, `comunidad`, `notas` and `tags` inside GHL (see docs/configuracion-ghl.md).
 
 ## Vite quirks
 - `server.allowedHosts` includes an ngrok tunnel — add yours there for tunnel testing.

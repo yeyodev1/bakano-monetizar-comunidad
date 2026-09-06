@@ -1,25 +1,22 @@
 # Configuración de GoHighLevel para la landing de comunidades
 
-## Estado: PENDIENTE de workflow propio
+## Estado: webhook propio configurado (2026-09-06)
 
-El circuito técnico ya existe (heredado de la landing de reconstrucción) y está probado:
+`GHL_WEBHOOK_URL` en Vercel apunta al workflow de comunidades
+(`…/webhook-trigger/4vYSykpL5EV6h42FS2Cj`). El circuito:
 
 ```
 Landing → /api/lead (Vercel, serverless) → Webhook GHL → Workflow → Contacto creado
                     └→ Meta Conversions API (dedup por event_id)
 ```
 
-Lo que falta es un **workflow de GHL para esta campaña**. El de reconstrucción mapea campos
-(`interes`, `plan_nombre`, `valor`) que esta landing ya no manda.
-
-## Cómo montarlo
+## Mapeo en el workflow
 
 - **Subcuenta:** bakano (`pEFChujwCCaMWBNbZYD1`)
-- Crear carpeta `LEADS MONETIZAR COMUNIDAD` y un workflow con:
-  - Trigger: **Webhook entrante** (GHL genera la URL; va en `GHL_WEBHOOK_URL`, nunca en código).
-  - GHL exige una **referencia de mapeo** antes de guardar: mandarle una petición de muestra con
-    el payload de abajo y elegirla en el dropdown.
-  - Acción **Crear contacto**:
+- Trigger: **Webhook entrante** (GHL genera la URL; va en `GHL_WEBHOOK_URL`, nunca en código).
+  GHL exige una **referencia de mapeo** antes de guardar: mandarle una petición de muestra con
+  el payload de abajo y elegirla en el dropdown.
+- Acción **Crear contacto**:
 
 | Campo GHL | Variable del webhook |
 |---|---|
@@ -28,8 +25,10 @@ Lo que falta es un **workflow de GHL para esta campaña**. El de reconstrucción
 | First name | `Inbound Webhook Trigger . Nombre` |
 | Last name | `Inbound Webhook Trigger . Apellido` |
 | Contact source | `Inbound Webhook Trigger . Origen` |
-| Campo custom "Instagram / comunidad" | `Inbound Webhook Trigger . Instagram` (lo que escribió: @ o nombre de comunidad) |
-| Website | `Inbound Webhook Trigger . Instagram Url` (solo viene si escribió un handle) |
+| Campo custom "Instagram" | `Inbound Webhook Trigger . Instagram` (el handle, sin @) |
+| Website | `Inbound Webhook Trigger . Instagram Url` (solo viene si el handle es válido) |
+| Campo custom "Comunidad" | `Inbound Webhook Trigger . Comunidad` (nombre de la comunidad) |
+| **Notas** (acción *Add Notes*) | `Inbound Webhook Trigger . Notas` — resumen completo con emojis y saltos de línea |
 
   - Acción **Add Tag** leyendo `Inbound Webhook Trigger . Tags`.
   - Condición por `Inbound Webhook Trigger . Etapa`: solo `comunidad_lead` crea contacto. Las
@@ -52,6 +51,7 @@ Lo que falta es un **workflow de GHL para esta campaña**. El de reconstrucción
   "email": "scarlett@correo.com",
   "instagram": "scarlett",
   "instagram_url": "https://www.instagram.com/scarlett/",
+  "comunidad": "Las que facturan",
   "tamano": "20k-50k",
   "tamano_nombre": "Entre 20k y 50k",
   "oferta": "servicio",
@@ -60,6 +60,7 @@ Lo que falta es un **workflow de GHL para esta campaña**. El de reconstrucción
   "mes": "septiembre",
   "cupos_restantes": "17",
   "tags": "landing-comunidad,comunidad-20k-50k,oferta-servicio,lead-calificado",
+  "notas": "🚀 Nuevo lead · Monetizar comunidad\n\n👤 Scarlett Pérez\n📱 +593984934039\n📧 scarlett@correo.com\n📸 Instagram: @scarlett · https://www.instagram.com/scarlett/\n👥 Comunidad: Las que facturan\n\n📊 Tamaño: Entre 20k y 50k\n🎯 Quiere vender: Un servicio (asesorías, sesiones, mentorías)\n✅ Califica: sí, comunidad desde 20k\n\n🗓️ Entró en septiembre · quedaban 17 cupos\n🔗 Origen: https://comunidad.bakano.ec/\n🏷️ Etiquetas: landing-comunidad, comunidad-20k-50k, oferta-servicio, lead-calificado",
   "fbclid": "", "fbc": "", "fbp": "", "utm_source": "", "…": ""
 }
 ```

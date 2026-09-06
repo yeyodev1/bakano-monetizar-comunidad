@@ -15,6 +15,7 @@ const form = ref({
   telefono: '',
   email: '',
   instagram: '',
+  comunidad: '',
   tamano: '',
   oferta: '',
 })
@@ -31,14 +32,12 @@ const valido = computed(
     form.value.telefono !== '' &&
     emailValido.value &&
     form.value.instagram.trim().length > 1 &&
+    form.value.comunidad.trim().length > 1 &&
     form.value.tamano !== '' &&
     form.value.oferta !== '',
 )
 
-/**
- * Acepta @usuario, la URL del perfil o el nombre de la comunidad. Si es un handle, lo deja
- * limpio (sin @ ni URL) para que el servidor pueda armar el enlace al perfil.
- */
+/** Acepta @usuario o la URL del perfil y deja solo el handle, para armar el enlace en el servidor. */
 const limpiarInstagram = (u: string) =>
   u
     .trim()
@@ -60,6 +59,7 @@ async function enviar() {
       telefono: form.value.telefono,
       email: form.value.email.trim().toLowerCase(),
       instagram: limpiarInstagram(form.value.instagram),
+      comunidad: form.value.comunidad.trim(),
       tamano,
       tamano_nombre: etiquetaTamano(tamano),
       oferta: form.value.oferta,
@@ -115,7 +115,7 @@ async function enviar() {
     </label>
 
     <label class="cf__campo">
-      Tu Instagram o el nombre de tu comunidad
+      Tu Instagram
       <input
         v-model="form.instagram"
         type="text"
@@ -124,6 +124,16 @@ async function enviar() {
         autocomplete="off"
       />
       <small>Es lo primero que revisamos antes de escribirte.</small>
+    </label>
+
+    <label class="cf__campo">
+      Nombre de tu comunidad
+      <input
+        v-model="form.comunidad"
+        type="text"
+        placeholder="Cómo le dices a tu gente o a tu marca"
+        autocomplete="off"
+      />
     </label>
 
     <p class="cf__pregunta">¿De qué tamaño es tu comunidad?</p>

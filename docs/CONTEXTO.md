@@ -82,8 +82,8 @@ Detalle en `CLAUDE.md`.
 1. **Registro DNS en Cloudflare** (bakano.ec usa nameservers de Cloudflare, no de Vercel):
    `A comunidad 76.76.21.21`, sin proxy (nube gris), igual que `web.bakano.ec`. Vercel verifica
    solo y emite el certificado. El `CLOUDFLARE_API_TOKEN` del entorno local está **inválido**.
-2. **Workflow de GHL propio.** El webhook copiado es el de reconstrucción: crea el contacto con
-   nombre y teléfono, pero ignora `tamano`, `oferta` y las etiquetas nuevas. El `GHL_WEBHOOK_URL` de la landing anterior funciona técnicamente,
+2. **Mapeo dentro del workflow de GHL** (el webhook propio ya está en Vercel desde el
+   2026-09-06): email, Instagram, comunidad, notas y etiquetas. Ver `docs/configuracion-ghl.md`. El `GHL_WEBHOOK_URL` de la landing anterior funciona técnicamente,
    pero ese workflow mapea `interes`/`plan_nombre`, que ya no existen. Crear uno nuevo con el
    payload de `docs/configuracion-ghl.md`.
 3. Confirmar con Bakano el umbral de 20k, el total de 20 cupos y las opciones de "¿qué quieres venderle?".

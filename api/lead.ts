@@ -47,6 +47,35 @@ function etiquetas(tamano: string, oferta: string): string[] {
   return base
 }
 
+/**
+ * Resumen legible del lead para el campo de notas del contacto en GHL.
+ * Con emojis y saltos de línea a propósito: así lo pidió Bakano para leerlo de un vistazo.
+ */
+function notas(d: Record<string, string>, tags: string[], instagramUrl: string): string {
+  const ok = califica(d.tamano)
+  const utm = [d.utm_source, d.utm_medium, d.utm_campaign].filter(Boolean).join(' / ')
+  const lineas = [
+    '🚀 Nuevo lead · Monetizar comunidad',
+    '',
+    `👤 ${d.nombre} ${d.apellido}`.trim(),
+    `📱 ${d.telefono}`,
+    `📧 ${d.email}`,
+    `📸 Instagram: @${d.instagram}${instagramUrl ? ` · ${instagramUrl}` : ''}`,
+    `👥 Comunidad: ${d.comunidad || 'no indicó'}`,
+    '',
+    `📊 Tamaño: ${d.tamano_nombre || d.tamano || 'no indicó'}`,
+    `🎯 Quiere vender: ${d.oferta_nombre || d.oferta || 'no indicó'}`,
+    ok ? '✅ Califica: sí, comunidad desde 20k' : '⏳ No califica todavía: menos de 20k → nurture',
+    '',
+    `🗓️ Entró en ${d.mes || 'mes sin dato'} · quedaban ${d.cupos_restantes || '?'} cupos`,
+    `🔗 Origen: ${d.origen_url || d.origen || 'landing'}`,
+  ]
+  if (utm) lineas.push(`📣 UTM: ${utm}`)
+  if (d.fbclid) lineas.push('📣 Llegó desde un anuncio de Meta')
+  lineas.push(`🏷️ Etiquetas: ${tags.join(', ')}`)
+  return lineas.join('\n')
+}
+
 async function enviarAGhl(payload: Record<string, unknown>): Promise<boolean> {
   if (!GHL_WEBHOOK) return false
   try {
@@ -130,6 +159,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     'telefono',
     'email',
     'instagram',
+    'comunidad',
     'tamano',
     'tamano_nombre',
     'oferta',
@@ -162,6 +192,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const tags = etiquetas(datos.tamano, datos.oferta)
+  // Si lo que escribió parece un handle (sin espacios), armamos el enlace al perfil.
+  const instagram_url = esHandle(datos.instagram)
+    ? `https://www.instagram.com/${datos.instagram}/`
+    : ''
   const ip = String(req.headers['x-forwarded-for'] ?? '')
     .split(',')[0]
     .trim()
@@ -174,10 +208,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ...datos,
       tags: tags.join(','), // GHL mapea mejor una cadena separada por comas
       full_name: `${datos.nombre} ${datos.apellido}`.trim(),
-      // Si lo que escribió parece un handle (sin espacios), armamos el enlace al perfil.
-      instagram_url: esHandle(datos.instagram)
-        ? `https://www.instagram.com/${datos.instagram}/`
-        : '',
+      instagram_url,
+      notas: notas(datos, tags, instagram_url),
     }),
     // Sólo una comunidad que califica es un Lead para Meta; el resto es un contacto.
     enviarACapi(datos, califica(datos.tamano) ? 'Lead' : 'Contact', event_id, ip, ua),
