@@ -71,17 +71,22 @@ Detalle en `CLAUDE.md`.
 - `api/lead.ts` adaptado: etapas `comunidad_view` / `comunidad_lead`, campos `usuario`,
   `tamano`, `oferta`, etiquetas nuevas.
 
-- Proyecto de Vercel creado, conectado al repo, con `GHL_WEBHOOK_URL`, `META_PIXEL_ID` y
-  `META_CAPI_TOKEN` copiados del proyecto de reconstrucción como Secrets de producción.
-  Primer deploy de producción hecho. La URL `*.vercel.app` redirige al SSO de Vercel
+- Proyecto de Vercel creado, conectado al repo. `GHL_WEBHOOK_URL` apunta al workflow de
+  comunidades y `META_PIXEL_ID` está puesto. **Falta `META_CAPI_TOKEN`**: no se puede copiar
+  del proyecto viejo (`vercel env pull` devuelve un placeholder para variables *Sensitive*);
+  hay que pegarlo a mano con `vercel env add META_CAPI_TOKEN production --sensitive`.
+  Hasta entonces `/api/lead` responde `capi: false` y Meta solo recibe el evento del Pixel del
+  navegador. Primer deploy de producción hecho. La URL `*.vercel.app` redirige al SSO de Vercel
   (Deployment Protection); el dominio propio no.
 - Dominio `comunidad.bakano.ec` asignado al proyecto en Vercel.
 
+- DNS `A comunidad 76.76.21.21` creado en Cloudflare; https://comunidad.bakano.ec responde.
+- Lead de prueba enviado a producción: GHL lo aceptó (`ok: true`). **Borrar en GHL el contacto
+  `PRUEBA BORRAR (Claude)`** (`prueba-borrar@bakano.ec`).
+
 **Pendiente, en orden:**
 
-1. **Registro DNS en Cloudflare** (bakano.ec usa nameservers de Cloudflare, no de Vercel):
-   `A comunidad 76.76.21.21`, sin proxy (nube gris), igual que `web.bakano.ec`. Vercel verifica
-   solo y emite el certificado. El `CLOUDFLARE_API_TOKEN` del entorno local está **inválido**.
+1. **`META_CAPI_TOKEN` en Vercel** (ver arriba) y redeploy.
 2. **Mapeo dentro del workflow de GHL** (el webhook propio ya está en Vercel desde el
    2026-09-06): email, Instagram, comunidad, notas y etiquetas. Ver `docs/configuracion-ghl.md`. El `GHL_WEBHOOK_URL` de la landing anterior funciona técnicamente,
    pero ese workflow mapea `interes`/`plan_nombre`, que ya no existen. Crear uno nuevo con el
